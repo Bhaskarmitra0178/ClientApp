@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// import { StyleSheet } from 'react-native';
 import { Splash } from './Screens/Splash';
-import { fetchUserToken } from './Utils/Services/AuthService';
+import { checkContactDetails, checkBillingDetails, checkApplicationDetails } from './Utils/Services/AuthService';
 import { StoreModel } from './Redux/Model/Store.model';
 import { Routes } from './Screens/Routes';
+import * as firebase from 'firebase';
+import * as RootNavigation from './Utils/Configurations/NavigationRef';
 
-export const Core = () => {
 
+export const Core = (props: any) => {
     /**
      * Variables declared.
      */
@@ -17,28 +18,27 @@ export const Core = () => {
     /**
      * calls the authenticatedUser function to check the user state.
      */
-    useEffect(() => {
-        authenticateUser();
-    }, [])
-
-    
-    /**
-     * Checks for authenticated user.
-     */
-    const authenticateUser = async () => {
-        try {
-            const token = await fetchUserToken();
-            if (token) {
-                dispatch({type: 'RESTORE_TOKEN', payload: token});
+    useEffect(() => 
+    {
+        const authenticationUnsubscribe = firebase.auth().onAuthStateChanged(async (user: any) => {
+            if (user) {
+                
+                const checkUserContactDetails = await checkContactDetails({userUID: user.uid})
+                if (checkUserContactDetails.size) {
+                    dispatch({type: 'SIGN_IN', payload: {userDetails: user, hasAdditionalDetails: true}})
+                } else {
+                    dispatch({type: 'SIGN_IN', payload: {userDetails: user, hasAdditionalDetails: false}})
+                } 
             } else {
                 dispatch({type: 'SIGN_OUT'});
-            }
-        } catch (error) {
-            console.log(error);
-            dispatch({type: 'SIGN_OUT'});
+            } 
+        });
+
+        return () => {
+            authenticationUnsubscribe();    
         }
-    }
-   
+    }, [])
+
     /**
      * Display flash screen
      */
@@ -48,6 +48,6 @@ export const Core = () => {
     }
 
     return (
-        <Routes user={user}/>
+        <Routes user={user} />
     )
 }
