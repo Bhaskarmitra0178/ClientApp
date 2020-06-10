@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { TextInputMask } from 'react-native-masked-text'
 import { Container, Content, Grid, Row, Form, Thumbnail, Item, Icon, Input, Button, Text, Toast, Spinner } from 'native-base';
-import { emptyFieldValidator, hasError, setBillingDetails } from '../../../Utils/Services/AuthService';
 import { useSelector, useDispatch } from 'react-redux';
 import { StoreModel } from '../../../Redux/Model/Store.model';
 import {StyleSheet} from 'react-native';
@@ -12,8 +11,9 @@ export const BillingDetails = (props: any) => {
         /**
      * Variable declaration
      */
-    const [billingAddress, setBillingAddress] = useState({ value: '', error: '', hasError: true, touched: false });
-    const [ccNumber, setCCNumber] = useState({ value: '', error: '', hasError: true, touched: false });
+    const [billingAddress, setBillingAddress] = useState({ value: '', error: '', hasError: false, touched: false });
+    const [ccNumber, setCCNumber] = useState({ value: '', error: '', hasError: false, touched: false });
+    const [cvvNumber, setCVVNumber] = useState({ value: '', error: '', hasError: false, touched: false });
     const [loading, setLoading] = useState<boolean>(false);
     const [logo, setLogo] = useState<string>('');
 
@@ -27,6 +27,24 @@ export const BillingDetails = (props: any) => {
     useEffect(() => {
         initialiseLogo();
     }, [])
+
+    useEffect(() => {
+        setCVVNumber({ 
+            ...cvvNumber,
+            error: (cvvNumber.value.length > 0 && cvvNumber.value.length !== 3 ? 'Invalid Card Number' : ccNumber.value && !ccNumber.hasError ? 'Please enter CVV' : ''),
+            hasError: ccNumber.value && !ccNumber.hasError ? true : cvvNumber.value.length > 0 && cvvNumber.value.length !== 3 ? true : false,
+            touched: true
+        })
+    }, [ccNumber])
+
+    // useEffect(() => {
+    //     setCCNumber({
+    //         ...ccNumber,
+    //         error: (ccNumber.value.length > 0 && ccNumber.value.length !== 19 ? 'Invalid Card Number' : ''),
+    //         hasError: ccNumber.value.length > 0 && ccNumber.value.length !== 19,
+    //         touched: true
+    //     })
+    // }, [cvvNumber])
 
     /**
      * Initialises the logo
@@ -46,35 +64,11 @@ export const BillingDetails = (props: any) => {
             payload: {
                 billingAddress: billingAddress.value,
                 ccNumber: ccNumber.value,
+                cvvNumber: cvvNumber.value
             }
         });
         setLoading(false);
         props.navigation.navigate('Application Fanout');
-        /* setBillingDetails(user.userDetails.uid, {
-            billingAddress: billingAddress.value,
-            ccNumber: ccNumber.value,
-        })
-        .then((querySnapshot: any) => {
-            if (querySnapshot) {
-                Toast.show({
-                    text: 'Billing successfully saved!',
-                    position: "bottom",
-                    type: "success",
-                    duration: 2000
-                })
-                setLoading(false);
-                props.navigation.navigate('Application Fanout');
-            }
-        })
-        .catch((error: any) => {
-            Toast.show({
-                text: error.message,
-                position: "bottom",
-                type: "danger",
-                duration: 2000
-            })
-            setLoading(false);
-        }) */
     }
     return (
         <Container>
@@ -99,25 +93,25 @@ export const BillingDetails = (props: any) => {
                                     placeholder="Billing Address"
                                     returnKeyType="next"
                                     value={billingAddress.value}
-                                    onChangeText={text => setBillingAddress({ value: text, error: emptyFieldValidator(text), hasError: hasError('billingDetails.billingAddress',text), touched: true })}
+                                    onChangeText={text => setBillingAddress({ value: text, error: '', hasError: false, touched: true })}
                                 />
                             </Item>
                             <Item underline={false}>
                                 <Text note={true} style={styles.errorText}>{billingAddress.error}</Text>
                             </Item>
-                            
-                            
                         
                             <Item>
                                 <Icon android='md-card' ios='ios-card'/>
                                 <TextInputMask
-                                    style={{padding: 20}}
+                                     style={{ padding: 10, fontSize: 16, width: '100%'}}
+                                     placeholder="Card Number"
+                                     placeholderTextColor="#555"
                                     type={'custom'}
                                     options={{
-                                        mask: '9999-9999-9999-9999'
+                                        mask: '9999 9999 9999 9999'
                                     }}
                                     value={ccNumber.value}
-                                    onChangeText={text => setCCNumber({ value: text, error: emptyFieldValidator(text), hasError: hasError('billingDetails.ccNumber',text), touched: true })}
+                                    onChangeText={text => setCCNumber({ value: text, error: (text.length > 0 && text.length !== 19 ? 'Invalid Card Number' : ''), hasError: text.length > 0 && text.length !== 19, touched: true })}
                                 />
                             </Item>
 
@@ -125,15 +119,39 @@ export const BillingDetails = (props: any) => {
                                 <Text note={true} style={styles.errorText}>{ccNumber.error}</Text>
                             </Item>
 
+                            <Item>
+                                <Icon android='md-card' ios='ios-card'/>
+                                <TextInputMask
+                                      placeholder="CVV"
+                                      placeholderTextColor="#555"
+                                    style={{ padding: 10, fontSize: 16, width: '100%'}}
+                                    type={'custom'}
+                                    options={{
+                                        mask: '999'
+                                    }}
+                                    value={cvvNumber.value}
+                                    onChangeText={text => setCVVNumber({ value: text,
+                                        error: (text.length > 0 && text.length !== 3 ? 'Invalid CVV Number' : ''),
+                                        hasError: text.length > 0 && text.length !== 3 ? true : ccNumber.value && ccNumber.hasError ? true  : false,
+                                        touched: true
+                                    })}
+                                />
+                            </Item>
+
+                            <Item underline={false}>
+                                <Text note={true} style={styles.errorText}>{cvvNumber.error}</Text>
+                            </Item>
+
                             <Grid style={{alignItems:'center', justifyContent: 'center'}}>
                                 <Row style={{alignItems:'center', justifyContent: 'center'}}>
                                     <Button  
+                                        style={styles.alignButton}
                                         dark
                                         iconRight
-                                        disabled={loading || billingAddress.hasError || ccNumber.hasError }
+                                        disabled={loading || billingAddress.hasError || (ccNumber.value.length > 0 && ccNumber.value.length !== 19) || cvvNumber.hasError }
                                         onPress={onSubmitBillingDetails}
                                     >
-                                        <Text>Next</Text>
+                                        <Text>Next </Text>
                                         <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>
                                     </Button>
                                 </Row>

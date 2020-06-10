@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Container, Content, Grid, Row, Form, Thumbnail, Item, Icon, Input, Button,Col,Text, Toast, Spinner } from 'native-base'
-import { emptyFieldValidator, hasError, emailValidator, confirmPasswordValidator, setContactDetails } from '../../../Utils/Services/AuthService'
+import { emptyFieldValidator, hasError} from '../../../Utils/Services/AuthService'
 import {StyleSheet} from 'react-native'
 import { initialiseImages } from '../../../Utils/Services/ExpoService'
 import { useSelector, useDispatch } from 'react-redux'
 import { StoreModel } from '../../../Redux/Model/Store.model'
+import { TextInputMask } from 'react-native-masked-text'
 
 export const ContactDetails = (props: any) => {
     /**
      * Variable declaration
      */
-    const [firstName, setFirstName] = useState({ value: '', error: '', hasError: true, touched: false });
-    const [lastName, setLastName] = useState({ value: '', error: '', hasError: true, touched: false });
+    const [name, setName] = useState({ value: '', error: '', hasError: true, touched: false });
     const [telephone, setTelephone] = useState({ value: '', error: '', hasError: false, touched: false });
     const [logo, setLogo] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -27,6 +27,7 @@ export const ContactDetails = (props: any) => {
         initialiseLogo();
     }, [])
 
+
     /**
      * Initialises the logo
      */
@@ -40,39 +41,12 @@ export const ContactDetails = (props: any) => {
         dispatch({
             type: 'SET_LOCAL_CONTACT_STORAGE',
             payload: {
-                firstName: firstName.value,
-                lastName: lastName.value,
+                name: name.value,
                 telephone: telephone.value
             }
         });
         setLoading(false);
         props.navigation.navigate('Billing Details');
-       /*  setContactDetails(user.userDetails.uid, {
-            firstName: firstName.value,
-            lastName: lastName.value,
-            telephone: telephone.value
-        })
-        .then((querySnapshot: any) => {
-            if (querySnapshot) {
-                Toast.show({
-                    text: 'Contact successfully saved!',
-                    position: "bottom",
-                    type: "success",
-                    duration: 2000
-                })
-                setLoading(false);
-                props.navigation.navigate('Billing Details');
-            }
-        })
-        .catch((error: any) => {
-            Toast.show({
-                text: error.message,
-                position: "bottom",
-                type: "danger",
-                duration: 2000
-            })
-            setLoading(false);
-        }) */
     }
 
     return (
@@ -89,48 +63,36 @@ export const ContactDetails = (props: any) => {
                         </Grid>
 
                         <Item 
-                            success={firstName.value.length > 0 && !firstName.hasError}
-                            error={firstName.touched && firstName.hasError}
+                            success={name.value.length > 0 && !name.hasError}
+                            error={name.touched && name.hasError}
                         >
                             <Icon android='md-person' ios='ios-person'/>
                             <Input 
-                                label="First Name"
-                                placeholder="First Name"
+                                label="Name"
+                                placeholder="Name"
                                 returnKeyType="next"
-                                value={firstName.value}
-                                onChangeText={text => setFirstName({ value: text, error: emptyFieldValidator(text), hasError: hasError('contactDetails.firstName',text), touched: true })}
+                                value={name.value}
+                                onChangeText={text => setName({ value: text, error: emptyFieldValidator(text), hasError: hasError('contactDetails.name',text), touched: true })}
                             />
                         </Item>
                         <Item underline={false}>
-                            <Text note={true} style={styles.errorText}>{firstName.error}</Text>
-                        </Item>
-                        <Item 
-                            success={lastName.value.length > 0 && !lastName.hasError}
-                            error={lastName.touched && lastName.hasError}
-                        >
-                            <Icon android='md-person' ios='ios-person'/>
-                            <Input 
-                                label="Last Name"
-                                placeholder="Last Name"
-                                returnKeyType="next"
-                                value={lastName.value}
-                                onChangeText={text => setLastName({ value: text, error: emptyFieldValidator(text), hasError: false, touched: true })}
-                            />
-                        </Item>
-                        <Item underline={false}>
-                            <Text note={true} style={styles.errorText}>{lastName.error}</Text>
+                            <Text note={true} style={styles.errorText}>{name.error}</Text>
                         </Item>
                             
                         
                         <Item>
                             <Icon android='md-phone-portrait' ios='ios-phone-portrait' />
-                            <Input
+                            <TextInputMask
                                 placeholder="Mobile"
-                                label="Mobile"
-                                returnKeyType="done"
+                                placeholderTextColor="#555"
+                                style={{ padding: 10, fontSize: 16, width: '100%'}}
+                                type={'custom'}
+                                options={{
+                                    mask: '9999999999'
+                                }}
                                 value={telephone.value}
-                                onChangeText={(text: string) => setTelephone({ value: text, error: '', hasError: false, touched: true })}
-                            /> 
+                                onChangeText={(text: string) => setTelephone({ value: text, error: (text.length > 0 && text.length !== 10 ? 'Invalid Phone Number' : ''), hasError: false , touched: true })}
+                            />
                         
                         </Item>
 
@@ -141,9 +103,10 @@ export const ContactDetails = (props: any) => {
                         <Grid style={{alignItems:'center', justifyContent: 'center'}}>
                             <Row style={{alignItems:'center', justifyContent: 'center'}}>
                                 <Button  
+                                    style={styles.alignButton}
                                     dark
                                     iconRight
-                                    disabled={loading || firstName.hasError || lastName.hasError }
+                                    disabled={loading || name.hasError || (telephone.value.length > 0 && telephone.value.length !== 10)}
                                     onPress={onSubmitContactDetails}
                                 >
                                     <Text>Next</Text>

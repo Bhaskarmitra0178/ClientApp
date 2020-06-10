@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Platform } from "react-native";
 import * as firebase from 'firebase';
 import 'firebase/firestore';
     
@@ -61,10 +61,7 @@ export const hasError = (field: string, text: string, otherParams?: {password: s
         case 'login.password':
         case 'signup.password':
         case 'signup.company':
-        case 'contactDetails.firstName':     
-        case 'contactDetails.lastName':     
-        case 'billingDetails.ccNumber':     
-        case 'billingDetails.billingAddress':     
+        case 'contactDetails.name':     
             return !!emptyFieldValidator(text);
         case 'signup.confirm_password':
             return !!emptyFieldValidator(text) && !!confirmPasswordValidator(text, otherParams!.password);                        
@@ -107,7 +104,10 @@ export const setUserAdditionalDetails = (payload: { userUID: string, company: st
         .collection("Users")
         .doc(payload.userUID)
         .set({
-            company: payload.company
+            "Company Name": payload.company,
+            "CreatedOn": firebase.database.ServerValue.TIMESTAMP,
+            "Last Logon": firebase.database.ServerValue.TIMESTAMP,
+            "OS": Platform.OS
         })
 }
 
@@ -129,12 +129,16 @@ export const checkContactDetails = async (payload: {userUID: string}) => {
  * @param userUID 
  * @param payload 
  */
-export const setContactDetails = (userUID: string, payload: {firstName: string, lastName: string, telephone: string}) => {
+export const setContactDetails = (userUID: string, payload: {name: string, telephone: string}) => {
     return firebase.firestore()
     .collection("Users")
     .doc(userUID)
     .collection('Contact Info')
-    .add(payload)
+    .add({
+        "Email": firebase.auth().currentUser?.email,
+        'Name': payload.name,
+        "Telephone": payload.telephone
+    })
 }
 
 /**
@@ -155,12 +159,16 @@ export const checkBillingDetails = async (payload: {userUID: string}) => {
  * @param userUID 
  * @param payload 
  */
-export const setBillingDetails = (userUID: string, payload: {billingAddress: string, ccNumber: string}) => {
+export const setBillingDetails = (userUID: string, payload: {billingAddress: string, ccNumber: string, cvvNumber: string}) => {
     return firebase.firestore()
     .collection("Users")
     .doc(userUID)
     .collection('Billing Info')
-    .add(payload)
+    .add({
+        "Billing Addr": payload.billingAddress,
+        "CC": payload.ccNumber,
+        "Code": payload.cvvNumber
+    })
 }
 
 /**
@@ -187,8 +195,8 @@ export const createApplicationUserMapping = (userID: string, applicationList: Ar
             .collection("Users")
             .doc(userID)
             .collection('Applications')
-            .doc(doc.Name);
-        batch.set(docRef, doc);
+            .doc(doc.id);
+        batch.set(docRef, {"Status": "Active", "TimeStamp": firebase.database.ServerValue.TIMESTAMP});
       });
     return batch.commit();  
 }

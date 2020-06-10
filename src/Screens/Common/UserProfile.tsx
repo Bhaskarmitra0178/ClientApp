@@ -1,135 +1,82 @@
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { View, Container, Content, Form, Item, Icon, Input, Header, Button, Text, Toast } from 'native-base'
-import { emailValidator, hasError, emptyFieldValidator, confirmPasswordValidator, registerUser } from '../../Utils/Services/AuthService'
-
+import { View,  CardItem, Left, Right, Text,Icon, Segment, Button, Thumbnail, Body, Card, Footer } from 'native-base'
+import { globalStyles } from '../../Utils/Data/Styles'
+import SegmentedControlTab from "react-native-segmented-control-tab";
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import * as firebase from 'firebase';
+import { useDispatch } from 'react-redux';
 
 export const UserProfile = () => {
     /**
     * Variable declaration
     */
-   const [userName, setUserName] = useState({ value: '', error: '', hasError: true, touched: false });
-   const [email, setEmail] = useState({ value: '', error: '', hasError: true, touched: false });
-   const [password, setPassword] = useState({ value: '', error: '', hasError: true, touched: false });
-   const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '', hasError: true, touched: false });
+   const dispatch = useDispatch();
    const [loading, setLoading] = useState<boolean>(false);
+   const [selectedIndex,setSelectedIndex] = useState<number>(0);
 
-   /**
-    * On sign up triggered.
-    */
-   const onSignUp = () => {
-       registerUser({email: email.value, password: password.value})
-       .then(console.log)
-       .catch((error: any) => {
-         // Handle Errors here.
-         Toast.show({
-           text: error.message,
-           buttonText: "Okay",
-           position: "bottom",
-           type: "danger",
-           duration: 2000
-         })
-
-         console.log(error);
-         // [END_EXCLUDE]
-       });
+   const onLogout = () => {
+        setLoading(true);
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            dispatch({type: 'SIGN_OUT'});
+            setLoading(false);
+        }).catch((error: any) => {
+            setLoading(false);
+            // An error happened.
+            console.log(error);
+        });
    }
+  
     /**
     * Render Function
     */
    return (
-       <Container>
-           <Header />
-           <Content>
-               <Form>
-                   <Item 
-                       success={userName.value.length > 0 && !userName.hasError}
-                       error={userName.touched && userName.hasError}
-                   >
-                       <Icon  android='md-person' ios='ios-person' />
-                       <Input 
-                           label="Username"
-                           placeholder="Username"
-                           returnKeyType="next"
-                           value={userName.value}
-                           onChangeText={text => setUserName({ value: text, error: emptyFieldValidator(text), hasError: hasError('signup.username',text), touched: true })}
-                       />
-                   </Item>
-
-                   <Item underline={false}>
-                           <Text note style={styles.errorText}>{email.error}</Text>
-                   </Item>
-
-                       <Item 
-                           success={email.value.length > 0 && !email.hasError}
-                           error={email.touched && email.hasError}
-                       >
-                           <Icon   android='md-mail' ios='ios-mail' />
-                           <Input 
-                               label="Email"
-                               placeholder="Email (eg. abc@xyz.com)"
-                               returnKeyType="next"
-                               value={email.value}
-                               autoCompleteType="email"
-                               keyboardType='email-address'
-                               textContentType='emailAddress'
-                               onChangeText={text => setEmail({ value: text, error: emailValidator(text), hasError: hasError('signup.email',text), touched: true })}
-                           />
-                       </Item>
-
-                   <Item underline={false}>
-                           <Text note style={styles.errorText}>{email.error}</Text>
-                   </Item>
-                   
-                       <Item success={password.value.length > 0 && !password.hasError}
-                           error={password.touched && password.hasError}
-                       >
-          
-                               <Input
-                                   placeholder="Password (eg. Hello@123)"
-                                   label="Password"
-                                   returnKeyType="done"
-                                   value={password.value}
-                                   onChangeText={(text: string) => setPassword({ value: text, error: emptyFieldValidator(text), hasError: hasError('signup.password',text), touched: true })}
-                                   secureTextEntry
-                               /> 
-                       
-                       </Item>
-                       <Item underline={false}>
-                           <Text note style={styles.errorText}>{password.error}</Text>
-                       </Item>
-
-                       <Item success={confirmPassword.value.length > 0 && !confirmPassword.hasError}
-                           error={confirmPassword.touched && confirmPassword.hasError}
-                       >
-          
-                               <Input
-                                   placeholder="Confirm Password"
-                                   label="Confirm Password"
-                                   returnKeyType="done"
-                                   value={confirmPassword.value}
-                                   onChangeText={(text: string) => setConfirmPassword({ value: text, error: confirmPasswordValidator(password.value, text), hasError: hasError('signup.confirm_password',text), touched: true })}
-                                   secureTextEntry
-                               /> 
-                       
-                       </Item>
-                       <Item underline={false}>
-                           <Text note style={styles.errorText}>{confirmPassword.error}</Text>
-                       </Item>
-                   </Form>
-
-                   <Button  
-                       style={[styles.center,styles.alignButton]}
-                       dark
-                       iconLeft
-                       disabled={loading || userName.hasError || email.hasError || password.hasError || confirmPassword.hasError}
-                       onPress={onSignUp}
-                   >
-                       <Icon  android='md-log-in' ios='ios-log-in'></Icon>
-                       <Text>Register</Text>
-               </Button>    
-           </Content>
-     </Container>
+        <View style={{flex: 1}}>
+            <View style={{flex: 0.3, backgroundColor: globalStyles.COLOR_PRIMARY, justifyContent: 'center', alignItems: 'center'}}>
+                <Icon style={{color: '#fff', fontSize: 100}} type='Entypo' name='user' />
+            </View>
+            <View style={{flex: 0.7, backgroundColor: globalStyles.COLOR_SECONDARY}}>
+                <Card style={{position: "absolute", width: '100%', padding: 0, top: 20, zIndex: 1}}>
+                    <CardItem bordered>
+                        <Left>
+                            <Text style={{flexWrap: 'wrap'}}>Default Settings</Text>
+                        </Left>
+                        <Right>
+                            <Icon name='arrow-forward'/>
+                        </Right>
+                    </CardItem>
+                    <Text style={{marginLeft: 25, marginTop: 10}}>Work Mode:</Text>
+                    <CardItem>
+                        <SegmentedControlTab
+                            values={["Offline", "Online"]}
+                            onTabPress={console.log}
+                        />
+                    </CardItem>
+                </Card>
+                <Text style={{position: 'absolute', color: '#b5b5ba', top: 160, flexWrap: 'wrap', fontSize: 12, padding:5}}>
+                    Offline mode cannot be toggled when offline sync is in progress. Once toggled,
+                    you'll remain offline until turned off.
+                </Text>
+                <View style={{position: "absolute", width: '100%', padding: 0, bottom: 140, zIndex: 1}}>
+                    <Card transparent={false}>
+                        <TouchableHighlight onPress={onLogout}>
+                            <CardItem style={{justifyContent: 'center'}}>
+                                <Text style={{color: '#ee919a', fontSize: 16}}>Sign Out</Text>
+                            </CardItem>
+                        </TouchableHighlight>
+                    </Card>
+                </View>
+                <View style={{position: "absolute", width: '100%', padding: 0, bottom: 80, zIndex: 1, justifyContent:'center', alignItems: 'center'}}>
+                    <Thumbnail source={require('../../../assets/logo.png')}/>
+                </View>
+                <Button style={{position: "absolute", bottom: 30, width:'100%', justifyContent: 'center', backgroundColor: globalStyles.COLOR_FOOTER}}>
+                    <Text style={{color: '#fff', fontSize: 22, textTransform:'capitalize'}}>Entuber</Text>
+                </Button>
+            </View>
+               
+           
+        </View>       
    )
 }
 

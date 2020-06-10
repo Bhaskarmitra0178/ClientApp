@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TestApp",
-    "slug": "TestApp",
+    "name": "eStock",
+    "slug": "eStock",
     "platforms": [
       "ios",
       "android",
@@ -23,10 +23,6 @@
     ],
     "ios": {
       "supportsTablet": true
-    },
-    "android": {
-      "package": "abc.testapp.xyz",
-      "versionCode": 1
     }
   }
 }
