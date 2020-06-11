@@ -13,7 +13,7 @@ import { AppList } from './Common/PostAuthentication/AppList';
 import { globalStyles } from '../Utils/Data/Styles';
 import { View } from 'react-native';
 import GenericListItems from './Common/GenericListItems';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Search } from './Common/Search';
 import { SearchDetails } from './Common/SearchDetails';
 
@@ -30,41 +30,40 @@ export const Routes = (props: any) => {
                     <>
                         <Stack.Screen name="SignIn"
                             options={({route, navigation}) => ({
-                                headerTitle: () => (
-                                    <Text>
-                                        <Icon android='md-log-in' ios='ios-log-in' fontSize={6} /> &nbsp;
-                                        LOG IN
-                                    </Text>
-                                ),
+                                title: 'LOG IN',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
                                 headerTitleAlign: 'center',
+                                headerTintColor: '#fff',
                                 headerRight: () => (
-                                    <Text onPress={() => navigation.navigate('SignUp')}> Register </Text>               
+                                    <TouchableOpacity>
+                                        <Text style={{color: '#fff'}} onPress={() => navigation.navigate('SignUp')}> Register </Text>               
+                                    </TouchableOpacity>
                                 ) 
                             })}
                             component={Login}
                          />
                         <Stack.Screen name="SignUp"
                             options={{
-                                headerTitle: () => (
-                                    <Text>
-                                        <Icon type='Entypo' android='md-person' ios='ios-person' fontSize={6} /> &nbsp;
-                                        SIGN UP
-                                    </Text>
-                                ),
+                                title: 'SIGN UP',
                                 headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
                             }}
                             component={Signup}
                          />
 
                         <Stack.Screen name="ForgotPassword"
                             options={{
-                                headerTitle: () => (
-                                    <Text>
-                                        <Icon android='md-key' ios='ios-key' fontSize={6} /> &nbsp;
-                                        FOGOT PASSWORD
-                                    </Text>
-                                ),
+                                title:'FOGOT PASSWORD',
                                 headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
                             }}
                             component={ForgotPassword}
                         /> 
@@ -72,9 +71,27 @@ export const Routes = (props: any) => {
                 ) :
                 !props.user.hasAdditionalDetails ? (
                     <>
-                        <Stack.Screen name="Contact Details" component={ContactDetails}/>
+                        <Stack.Screen name="Contact Details"
+                            options={{  
+                                title: 'Contact Details',
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            }}
+                            component={ContactDetails}/>
                         <Stack.Screen name="Billing Details" component={BillingDetails}/>
-                        <Stack.Screen name="Application Fanout" component={AppList}/> 
+                        <Stack.Screen name="Application Fanout"
+                            options={{
+                                title: 'Application Fanout',
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            }}
+                            component={AppList}/> 
                     </>
                 ) : (
                     <>
@@ -82,18 +99,18 @@ export const Routes = (props: any) => {
                             options={({route, navigation}) => ({
                                 title: 'Home',
                                 headerLeft: () => (
-                                    <TouchableHighlight onPress={() => navigation.navigate('UserProfile')} >
+                                    <TouchableOpacity onPress={() => navigation.navigate('UserProfile')} >
                                         <View style={{padding: 10, borderRadius: 5}}>
                                             <Icon type='Entypo' style={{color: '#fff'}} name='user'/>               
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
                                 ),
                                 headerRight: () => (
-                                    <TouchableHighlight>
+                                    <TouchableOpacity>
                                         <View style={{padding: 10}}>
                                             <Icon type='MaterialCommunityIcons' style={{color: '#fff'}} name='database-refresh'/>
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
                                 ),
                                 headerTitleAlign: 'center',
                                 headerStyle:{
@@ -119,11 +136,11 @@ export const Routes = (props: any) => {
                                 title: `${route.params && route.params.application.Name || 'ApplicationDetails'}`,
                                 headerTitleAlign: 'center',
                                 headerLeft: () => (
-                                    <TouchableHighlight onPress={() => navigation.navigate('Home')}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('Home')}>
                                         <View style={{padding: 10}}>
                                             <Icon type='FontAwesome' style={{color: '#fff'}} name='home' />
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
                                 ),
                                 headerStyle:{
                                     backgroundColor: globalStyles.COLOR_PRIMARY

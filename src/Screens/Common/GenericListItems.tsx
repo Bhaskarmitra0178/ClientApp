@@ -23,9 +23,9 @@ const GenericListItems = (props: any) => {
                 <FlatList data={details}
                     keyExtractor={(item: any) => item.id}
                     renderItem={
-                        ({item}) => (
-                            <TouchableHighlight underlayColor='#ccc' onPress={() => props.navigation.navigate('Search', { details: item.name})}>
-                                <CardItem key={item.id}>
+                        ({item, index}) => (
+                            <TouchableHighlight underlayColor='#666' onPress={() => props.navigation.navigate('Search', { details: item.name})}>
+                                <CardItem key={item.id} bordered={index !== details.length} last={index === details.length}>
                                     <Left>
                                         <Thumbnail source={item.image}/>
                                     </Left>

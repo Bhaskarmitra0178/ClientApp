@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Content, Form, Item, Icon, Input, Button, Text, Row, Grid, Thumbnail, Spinner, Toast } from 'native-base'
+import { Container, Content, Form, Item, Icon, Input, Button, Text, Row, Grid, Thumbnail, Spinner, Toast, Card, CardItem, Body } from 'native-base'
 import { emailValidator, hasError, resetPassword } from '../../Utils/Services/AuthService'
 import { StyleSheet } from 'react-native';
 import { initialiseImages } from '../../Utils/Services/ExpoService';
+import { globalStyles } from '../../Utils/Data/Styles';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export const ForgotPassword = (props: any) => {
 
@@ -59,60 +61,62 @@ export const ForgotPassword = (props: any) => {
      * Render Function
      */
     return (
-        <Container>
-            <Content padder={true}>
-                <Form>
-                        <Grid>
-                            <Row style={{alignItems:'center', justifyContent: 'center'}}>
-                                {logo ? <Thumbnail square
-                                    large
-                                    source={{uri:logo}}
-                                /> : <Spinner/>}
-                            </Row>
-                        </Grid>
-                        <Item 
-                            success={email.value.length > 0 && !email.hasError}
-                            error={email.touched && email.hasError}
-                        >
-                            <Icon   android='md-mail' ios='ios-mail' />
-                            <Input 
-                                label="Email"
-                                placeholder="Email (eg. abc@xyz.com)"
-                                returnKeyType="next"
-                                value={email.value}
-                                autoCompleteType="email"
-                                keyboardType='email-address'
-                                textContentType='emailAddress'
-                                onChangeText={text => setEmail({ value: text, error: emailValidator(text), hasError: hasError('forget_password.email',text), touched: true })}
-                            />
-                        </Item>
+        <Container style={{backgroundColor: globalStyles.COLOR_SECONDARY}}>
+            <Content padder={true} contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+                <Card>
+                    <CardItem>
+                        <Row style={{alignItems:'center', justifyContent: 'center'}}>
+                            {logo ? <Thumbnail square
+                                large
+                                source={{uri:logo}}
+                            /> : <Spinner/>}
+                        </Row>
+                    </CardItem>
+                    <CardItem>
+                        <Form style={styles.center}>
+                            <Item 
+                                success={email.value.length > 0 && !email.hasError}
+                                error={email.touched && email.hasError}
+                            >
+                                <Icon   android='md-mail' ios='ios-mail' />
+                                <Input 
+                                    label="Email"
+                                    placeholder="Email (eg. abc@xyz.com)"
+                                    returnKeyType="next"
+                                    value={email.value}
+                                    autoCompleteType="email"
+                                    keyboardType='email-address'
+                                    textContentType='emailAddress'
+                                    onChangeText={text => setEmail({ value: text, error: emailValidator(text), hasError: hasError('forget_password.email',text), touched: true })}
+                                />
+                            </Item>
 
-                        <Item underline={false}>
-                            <Text note style={styles.errorText}>{email.error}</Text>
-                        </Item>
-                        
-                        <Grid style={{justifyContent: 'center', alignItems: 'center'}}>
-                            <Row style={{justifyContent: 'center', alignItems: 'center'}}>
-                                <Button  
-                                    style={styles.alignButton}
-                                    dark={true}
-                                    iconLeft={true}
-                                    disabled={loading || email.hasError}
-                                    onPress={forgotPassword}
-                                >
-                                    <Icon  android='md-log-in' ios='ios-log-in'></Icon>
-                                    <Text>Forgot Password</Text>
-                                </Button>   
-                            </Row>
-                            <Row>
-                                <Text note={true}
-                                    style={styles.alignButton}
-                                    onPress={() => props.navigation.navigate('SignIn')}
-                                > Already a user ? Login </Text>
-                            </Row>
-                        </Grid>
-                    
-                    </Form>
+                            <Item underline={false}>
+                                <Text note style={styles.errorText}>{email.error}</Text>
+                            </Item>
+                        </Form>
+                    </CardItem>
+                    <CardItem last style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <Button  
+                                // style={styles.alignButton}
+                                dark={true}
+                                iconLeft={true}
+                                disabled={loading || email.hasError}
+                                onPress={forgotPassword}
+                            >
+                                <Icon  android='md-log-in' ios='ios-log-in'></Icon>
+                                <Text>Forgot Password</Text>
+                            </Button>   
+                    </CardItem>
+                    <CardItem style={{justifyContent: 'center'}}>
+                        <TouchableOpacity>
+                            <Text note={true}
+                                // style={styles.alignButton}
+                                onPress={() => props.navigation.navigate('SignIn')}
+                            > Already a user ? Login </Text>
+                        </TouchableOpacity>
+                    </CardItem>
+                </Card>
             </Content>
       </Container>
     )

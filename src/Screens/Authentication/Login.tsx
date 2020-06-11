@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Content, Form, Item, Input,  Button, Toast, Icon,Text, Thumbnail, Grid, Row, Spinner } from 'native-base';
+import { Container, Content, Form, Item, Input,  Button, Toast, Icon,Text, Thumbnail, Grid, Row, Spinner, Card, CardItem } from 'native-base';
 import { emptyFieldValidator, emailValidator, hasError, loginUser } from '../../Utils/Services/AuthService';
 import {StyleSheet} from 'react-native';
 import { initialiseImages } from '../../Utils/Services/ExpoService';
+import { globalStyles } from '../../Utils/Data/Styles';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
@@ -69,80 +71,82 @@ export const Login = (props: any) => {
      * Render Function
      */
     return (
-        <Container>
-            <Content padder={true} >
-                        <Form style={styles.center}>
-                            <Grid>
-                                <Row style={{alignItems:'center', justifyContent: 'center'}}>
-                                    {logo ? <Thumbnail square
-                                        large
-                                        source={{uri:logo}}
-                                    /> : <Spinner/>}
-                                </Row>
-                            </Grid>
-                            <Item 
-                                success={email.value.length > 0 && !email.hasError}
-                                error={email.touched && email.hasError}
-                            >
-                                <Icon   android='md-mail' ios='ios-mail' />
-                                <Input 
-                                    label="Email"
-                                    placeholder="Email (eg. abc@xyz.com)"
-                                    returnKeyType="next"
-                                    value={email.value}
-                                    keyboardType='email-address'
-                                    textContentType='emailAddress'
-                                    onChangeText={text => setEmail({ value: text, error: emailValidator(text), hasError: hasError('login.email',text), touched: true })}
-                                />
-                            </Item>
+        <Container style={{backgroundColor: globalStyles.COLOR_SECONDARY}}>
+            <Content padder={true} contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+                    <Card> 
+                        <CardItem>
+                            <Row style={{alignItems:'center', justifyContent: 'center'}}>
+                                {logo ? <Thumbnail square
+                                    large
+                                    source={{uri:logo}}
+                                /> : <Spinner/>}
+                            </Row>
+                        </CardItem>
+                        <CardItem>
+                            <Form style={styles.center}>
+                                <Item 
+                                    success={email.value.length > 0 && !email.hasError}
+                                    error={email.touched && email.hasError}
+                                >
+                                    <Icon   android='md-mail' ios='ios-mail' />
+                                    <Input 
+                                        label="Email"
+                                        placeholder="Email (eg. abc@xyz.com)"
+                                        returnKeyType="next"
+                                        value={email.value}
+                                        keyboardType='email-address'
+                                        textContentType='emailAddress'
+                                        onChangeText={text => setEmail({ value: text, error: emailValidator(text), hasError: hasError('login.email',text), touched: true })}
+                                    />
+                                </Item>
 
-                        <Item underline={false}>
-                            <Text note={true} style={styles.errorText}>{email.error}</Text>
-                        </Item>
-                        
-                            <Item success={password.value.length > 0 && !password.hasError}
-                                error={password.touched && password.hasError}
-                            >
-
-                                {!eyePassword && <Icon  onPress={() => setEyePassword(true)} android='md-eye' ios='ios-eye'></Icon>}
-                                {eyePassword && <Icon  onPress={() => setEyePassword(false)}  android='md-eye-off' ios='ios-eye-off'></Icon>}
-                                
-                                    <Input
-                                        placeholder="Password (eg. Hello@123)"
-                                        label="Password"
-                                        returnKeyType="done"
-                                        value={password.value}
-                                        onChangeText={(text: string) => setPassword({ value: text, error: emptyFieldValidator(text), hasError: hasError('login.password',text), touched: true })}
-                                        secureTextEntry={!eyePassword}
-                                    /> 
-                            
-                            </Item>
                             <Item underline={false}>
-                                <Text note={true} style={styles.errorText}>{password.error}</Text>
+                                <Text note={true} style={styles.errorText}>{email.error}</Text>
                             </Item>
+                            
+                                <Item success={password.value.length > 0 && !password.hasError}
+                                    error={password.touched && password.hasError}
+                                >
 
-                             <Grid style={{alignItems:'center', justifyContent: 'center'}}> 
-                                 <Row style={{alignItems:'center',justifyContent: 'center'}}> 
-                                     <Button 
-                                        style={styles.alignButton}
-                                        dark={true}
-                                        iconLeft={true}
-                                        disabled={loading || email.hasError || password.hasError}
-                                        onPress={onLoginPressed}
-                                    >
-                                        <Icon  android='md-log-in' ios='ios-log-in'></Icon>
-                                        <Text>Login</Text>
-                                    </Button>    
-                                 </Row> 
-                                 <Row> 
-                                     <Text note={true}
-                                        style={styles.alignButton}
+                                    {!eyePassword && <Icon  onPress={() => setEyePassword(true)} android='md-eye' ios='ios-eye'></Icon>}
+                                    {eyePassword && <Icon  onPress={() => setEyePassword(false)}  android='md-eye-off' ios='ios-eye-off'></Icon>}
+                                    
+                                        <Input
+                                            placeholder="Password (eg. Hello@123)"
+                                            label="Password"
+                                            returnKeyType="done"
+                                            value={password.value}
+                                            onChangeText={(text: string) => setPassword({ value: text, error: emptyFieldValidator(text), hasError: hasError('login.password',text), touched: true })}
+                                            secureTextEntry={!eyePassword}
+                                        /> 
+                                
+                                </Item>
+                                <Item underline={false}>
+                                    <Text note={true} style={styles.errorText}>{password.error}</Text>
+                                </Item>
+                            </Form>
+                        </CardItem>
+                        <CardItem style={{justifyContent: 'center'}}>
+                            <Button 
+                                // style={styles.alignButton}
+                                dark={true}
+                                iconLeft={true}
+                                disabled={loading || email.hasError || password.hasError}
+                                onPress={onLoginPressed}
+                            >
+                                <Icon  android='md-log-in' ios='ios-log-in'></Icon>
+                                <Text>Login</Text>
+                            </Button>    
+                        </CardItem>
+                        <CardItem last style={{justifyContent:'center'}}>
+                                <TouchableOpacity>
+                                    <Text note={true}
+                                        // style={styles.alignButton}
                                         onPress={() => props.navigation.navigate('ForgotPassword')}
                                     > Forgot Password ?</Text>  
-                                 </Row> 
-                             </Grid> 
-                        </Form>
-              
+                                </TouchableOpacity>
+                        </CardItem>
+                    </Card>
             </Content>
       </Container>
     )

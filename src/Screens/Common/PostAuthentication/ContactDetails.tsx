@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Container, Content, Grid, Row, Form, Thumbnail, Item, Icon, Input, Button,Col,Text, Toast, Spinner } from 'native-base'
+import { Container, Content, Grid, Row, Form, Thumbnail, Item, Icon, Input, Button,Col,Text, Toast, Spinner, Card, CardItem } from 'native-base'
 import { emptyFieldValidator, hasError} from '../../../Utils/Services/AuthService'
 import {StyleSheet} from 'react-native'
 import { initialiseImages } from '../../../Utils/Services/ExpoService'
 import { useSelector, useDispatch } from 'react-redux'
 import { StoreModel } from '../../../Redux/Model/Store.model'
 import { TextInputMask } from 'react-native-masked-text'
+import { globalStyles } from '../../../Utils/Data/Styles'
 
 export const ContactDetails = (props: any) => {
     /**
@@ -46,75 +47,78 @@ export const ContactDetails = (props: any) => {
             }
         });
         setLoading(false);
-        props.navigation.navigate('Billing Details');
+        props.navigation.navigate('Application Fanout');
     }
 
     return (
-        <Container>
-            <Content padder={true}>
-                    <Form>
-                        <Grid>
-                            <Row style={{alignItems:'center', justifyContent: 'center'}}>
-                                {logo ? <Thumbnail square
-                                    large
-                                    source={{uri:logo}}
-                                /> : <Spinner/>}
-                            </Row>
-                        </Grid>
-
-                        <Item 
-                            success={name.value.length > 0 && !name.hasError}
-                            error={name.touched && name.hasError}
-                        >
-                            <Icon android='md-person' ios='ios-person'/>
-                            <Input 
-                                label="Name"
-                                placeholder="Name"
-                                returnKeyType="next"
-                                value={name.value}
-                                onChangeText={text => setName({ value: text, error: emptyFieldValidator(text), hasError: hasError('contactDetails.name',text), touched: true })}
-                            />
-                        </Item>
-                        <Item underline={false}>
-                            <Text note={true} style={styles.errorText}>{name.error}</Text>
-                        </Item>
+        <Container style={{backgroundColor: globalStyles.COLOR_SECONDARY}}>
+            <Content padder={true} contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+                <Card>
+                    <CardItem>
+                        <Row style={{alignItems:'center', justifyContent: 'center'}}>
+                            {logo ? <Thumbnail square
+                                large
+                                source={{uri:logo}}
+                            /> : <Spinner/>}
+                        </Row>
+                    </CardItem>
+                    <CardItem>
+                            <Form style={styles.center}>
                             
-                        
-                        <Item>
-                            <Icon android='md-phone-portrait' ios='ios-phone-portrait' />
-                            <TextInputMask
-                                placeholder="Mobile"
-                                placeholderTextColor="#555"
-                                style={{ padding: 10, fontSize: 16, width: '100%'}}
-                                type={'custom'}
-                                options={{
-                                    mask: '9999999999'
-                                }}
-                                value={telephone.value}
-                                onChangeText={(text: string) => setTelephone({ value: text, error: (text.length > 0 && text.length !== 10 ? 'Invalid Phone Number' : ''), hasError: false , touched: true })}
-                            />
-                        
-                        </Item>
+                            <Item 
+                                success={name.value.length > 0 && !name.hasError}
+                                error={name.touched && name.hasError}
+                            >
+                                <Icon android='md-person' ios='ios-person'/>
+                                <Input 
+                                    label="Name"
+                                    placeholder="Name"
+                                    returnKeyType="next"
+                                    value={name.value}
+                                    onChangeText={text => setName({ value: text, error: emptyFieldValidator(text), hasError: hasError('contactDetails.name',text), touched: true })}
+                                />
+                            </Item>
+                            <Item underline={false}>
+                                <Text note={true} style={styles.errorText}>{name.error}</Text>
+                            </Item>
+                                
+                            
+                            <Item style={{padding: 5}}>
+                                <Icon android='md-phone-portrait' ios='ios-phone-portrait' />
+                                <TextInputMask
+                                    placeholder="Mobile"
+                                    placeholderTextColor="#555"
+                                    style={{ padding: 10, fontSize: 16, width: '100%'}}
+                                    type={'custom'}
+                                    options={{
+                                        mask: '9999999999'
+                                    }}
+                                    value={telephone.value}
+                                    onChangeText={(text: string) => setTelephone({ value: text, error: (text.length > 0 && text.length !== 10 ? 'Invalid Phone Number' : ''), hasError: false , touched: true })}
+                                />
+                            
+                            </Item>
 
-                        <Item underline={false}>
-                            <Text note={true} style={styles.errorText}>{telephone.error}</Text>
-                        </Item>
-
-                        <Grid style={{alignItems:'center', justifyContent: 'center'}}>
-                            <Row style={{alignItems:'center', justifyContent: 'center'}}>
-                                <Button  
-                                    style={styles.alignButton}
-                                    dark
-                                    iconRight
-                                    disabled={loading || name.hasError || (telephone.value.length > 0 && telephone.value.length !== 10)}
-                                    onPress={onSubmitContactDetails}
-                                >
-                                    <Text>Next</Text>
-                                    <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>
-                                </Button>
-                            </Row>
-                        </Grid>
-                    </Form>    
+                            <Item underline={false}>
+                                <Text note={true} style={styles.errorText}>{telephone.error}</Text>
+                            </Item>
+                        </Form>   
+                    </CardItem>
+                    <CardItem last style={{justifyContent:'center'}}>
+                        <Button  
+                            // style={styles.alignButton}
+                            dark
+                            iconRight
+                            disabled={loading || name.hasError || (telephone.value.length > 0 && telephone.value.length !== 10)}
+                            onPress={onSubmitContactDetails}
+                        >
+                            <Text>Next</Text>
+                            <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>
+                        </Button>
+                    </CardItem>
+                
+                </Card> 
+                   
             </Content>
       </Container>
     )

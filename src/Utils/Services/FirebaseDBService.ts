@@ -42,10 +42,10 @@ export const userApplicationList = (userUID: string) => {
 
 }
 
-export const createUserMapping = (userUID: string, payload: {applications: any, contactDetails: any, billingDetails: any}) => {
+export const createUserMapping = (userUID: string, payload: {applications: any, contactDetails: any}) => {
     return Promise.all([
         setContactDetails(userUID,payload.contactDetails),
-        setBillingDetails(userUID, payload.billingDetails),
+        // setBillingDetails(userUID, payload.billingDetails),
         createApplicationUserMapping(userUID, payload.applications)
     ])
 }

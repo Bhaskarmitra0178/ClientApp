@@ -40,10 +40,10 @@ export const GenericList = (props: any) => {
                 <FlatList data={applicationList || []}
                     pointerEvents='box-only'
                     keyExtractor={(item: any) => item.id}
-                    renderItem={({ item }: any) => (
+                    renderItem={({ item, index }: any) => (
                         
-                        <TouchableHighlight underlayColor="#ccc" onPress={() => props.navigation.navigate('ApplicationDetails', { application: item})}>
-                            <CardItem  key={item.Name}>
+                        <TouchableHighlight underlayColor="#666"  onPress={() => props.navigation.navigate('ApplicationDetails', { application: item})}>
+                            <CardItem  key={item.Name} bordered={index !== applicationList.length} last={index === applicationList.length}>
                                 <Left>
                                     <Body>
                                         {item.PictureUrl  ? <Thumbnail small={true} square 

@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { StoreModel } from '../../../Redux/Model/Store.model'
 import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
+import { globalStyles } from '../../../Utils/Data/Styles';
 
 export const AppList = (props: any) => {
 
@@ -53,8 +54,8 @@ export const AppList = (props: any) => {
         const selectedApps = applicationList.filter((appList: any) => appList.selected);
         createUserMapping(user.userDetails.uid,{
             applications: selectedApps,
-            contactDetails: user.localContactDetails,
-            billingDetails: user.localBillingDetails
+            contactDetails: user.localContactDetails
+            // billingDetails: user.localBillingDetails
         })
         .then(() => {
             dispatch({type: 'HAS_ADDITIONAL_DATA', payload: true})
@@ -113,8 +114,8 @@ export const AppList = (props: any) => {
                         </SafeAreaView>
                     </View>
                     <View style={{flex: 0.1}}> 
-                        <Footer>
-                            <Button dark onPress={submit}>
+                        <Footer style={{padding: 5,backgroundColor: globalStyles.COLOR_PRIMARY}}>
+                            <Button dark rounded onPress={submit}>
                                 <Text>Submit</Text>
                             </Button>
                         </Footer>    
