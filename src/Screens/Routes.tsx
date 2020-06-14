@@ -15,7 +15,7 @@ import { View } from 'react-native';
 import GenericListItems from './Common/GenericListItems';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Search } from './Common/Search';
-import { SearchDetails } from './Common/SearchDetails';
+import { SearchDetails, SearchPlant, SearchStorageLocation, SearchBarcode } from './Common/SearchDetails';
 
 
 export const Routes = (props: any) => {
@@ -170,6 +170,39 @@ export const Routes = (props: any) => {
                                 headerTintColor: '#fff'
                             })} 
                             component={SearchDetails}
+                        />
+                        <Stack.Screen name="SearchPlant"
+                            options={({route, navigation} : any) => ({
+                                title: `${route.params && route.params.appName || 'Search Plant'}`,
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={SearchPlant}
+                        />
+                        <Stack.Screen name="SearchStorageLoc"
+                            options={({route, navigation} : any) => ({
+                                title: `${route.params && route.params.appName || 'Search Storage Location'}`,
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={SearchStorageLocation}
+                        />
+                        <Stack.Screen name="SearchBarcode"
+                            options={({route, navigation} : any) => ({
+                                title: `${route.params && route.params.appName || 'Search Storage Location'}`,
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={SearchBarcode}
                         />
                     </>   
                 )

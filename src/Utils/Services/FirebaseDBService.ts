@@ -11,13 +11,36 @@ export const fetchCollection = (collectionName: string) => {
         .collection(collectionName)
         .get()
 }
-
+/**
+ * Fetch a document in firestore
+ * @param collectionName 
+ * @param docName 
+ */
 export const fetchDoc = (collectionName: string, docName: string) => {
     return firebase.firestore()
     .collection(collectionName)
     .doc(docName)
     .get()
 }
+/**
+ * Return the collection instance.
+ * @param collectionName 
+ */
+export const fetchCollectionInstance = (collectionName: string) => {
+    return firebase.firestore()
+        .collection(collectionName)
+}
+/**
+ * Return the document instance
+ * @param collectionName 
+ * @param docName 
+ */
+export const fetchDocInstance = (collectionName: string, docName: string) => {
+    return firebase.firestore()
+        .collection(collectionName)
+        .doc(docName)
+}
+
 export const fetchApplicationList = () => {
     return firebase.firestore()
         .collection('ApplicationFanout')

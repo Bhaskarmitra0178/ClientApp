@@ -2,6 +2,7 @@ import { SET_APPLICATION_DETAILS } from "../../Actions/AppDetailsAction";
 
 
 const appDetailsInitialState = {
+    masterData: [],
     materials: [],
     plants: [],
     storageLocations: []
@@ -14,9 +15,11 @@ export default (state = appDetailsInitialState, action: any ) => {
      case SET_APPLICATION_DETAILS:
         return {
             ...state,
-            materials: action.payload.materials,
-            plants: action.payload.plants,
-            storageLocations: action.payload.storageLocations
+            ...(action.payload.viewData ? {masterData: action.payload.viewData} : {}),
+            ...(action.payload.materials ? {materials: action.payload.materials} : {}),
+            ...(action.payload.plants ? {plants: action.payload.plants} : {}),
+            ...(action.payload.barcode ? {barcode: action.payload.barcode} : {}),
+            ...(action.payload.storageLocations ? {storageLocations: action.payload.storageLocations} : {})
         }
      default:
       return state
