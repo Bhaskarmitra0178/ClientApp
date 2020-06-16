@@ -1,8 +1,22 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { View, SafeAreaView } from 'react-native';
-import { Card, CardItem, Left, Icon, Body, Text, Right, Grid, Row } from 'native-base';
+import { View, SafeAreaView, Image } from 'react-native';
+import { Card, CardItem, Left, Icon, Body, Text, Right,  Thumbnail } from 'native-base';
 import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
+import { globalStyles } from '../../Utils/Data/Styles';
+
+export const renderEmptyContainer = (props: any) => {
+    return (
+            <View style={{backgroundColor: globalStyles.COLOR_SECONDARY, justifyContent: 'center', alignItems:'center'}}> 
+                <Image source={require('../../../assets/Images/no_data.jpg')}/>
+                <Card>
+                    <CardItem>
+                        <Text style={{color: 'red'}}> Oops! no item found. </Text>
+                    </CardItem>
+                </Card>
+            </View>
+    )
+}
 
 export const SearchDetails = (props: any) => {
 
@@ -16,6 +30,10 @@ export const SearchDetails = (props: any) => {
             }
             if (props.route.params.storageLocations) {
                 filteredData = filteredData.filter((material: any) => material['Storage Loc'] === Number(props.route.params.storageLocations));
+            }
+
+            if (!props.route.params.materials && !props.route.params.plants && !props.route.params.storageLocations) {
+                filteredData = [];
             }
 
             const getMaterialMaster = filteredData.reduce((acc: any, curr: any) => {
@@ -73,6 +91,8 @@ export const SearchDetails = (props: any) => {
             <View style={{flex: 0.7}}>
                 <SafeAreaView>
                     <FlatList 
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        disableVirtualization={false}
                         keyExtractor={(item: any) => item.id}
                         data={materialList || []}
                         renderItem={({item, index}) => (
@@ -100,6 +120,7 @@ export const SearchDetails = (props: any) => {
                             </TouchableHighlight>
                             
                         )}
+                        ListEmptyComponent={renderEmptyContainer(props)}
                     />
                 </SafeAreaView>
             </View>           
@@ -192,6 +213,8 @@ export const SearchPlant = (props: any) => {
                 </Card>
                 <SafeAreaView>
                     <FlatList 
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        disableVirtualization={false}
                         keyExtractor={(item: any) => item.id}
                         data={materialList || []}
                         renderItem={({item, index}) => (
@@ -213,6 +236,7 @@ export const SearchPlant = (props: any) => {
                             </TouchableHighlight>
                             
                         )}
+                        ListEmptyComponent={renderEmptyContainer(props)}
                     />
                 </SafeAreaView>
             </View>           
@@ -318,6 +342,8 @@ export const SearchStorageLocation = (props: any) => {
                 </Card>
                 <SafeAreaView>
                     <FlatList 
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        disableVirtualization={false}
                         keyExtractor={(item: any) => item.id}
                         data={materialList || []}
                         renderItem={({item, index}) => (
@@ -342,8 +368,8 @@ export const SearchStorageLocation = (props: any) => {
                                     
                                 </CardItem>
                             </TouchableHighlight>
-                            
                         )}
+                        ListEmptyComponent={renderEmptyContainer(props)}
                     />
                 </SafeAreaView>
             </View>           
@@ -454,6 +480,8 @@ export const SearchBarcode = (props: any) => {
                 </Card>
                 <SafeAreaView>
                     <FlatList 
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        disableVirtualization={false}
                         keyExtractor={(item: any) => item.id}
                         data={materialList || []}
                         renderItem={({item, index}) => (
@@ -478,8 +506,8 @@ export const SearchBarcode = (props: any) => {
                                     
                                 </CardItem>
                             </TouchableHighlight>
-                            
                         )}
+                        ListEmptyComponent={renderEmptyContainer(props)}
                     />
                 </SafeAreaView>
             </View>           

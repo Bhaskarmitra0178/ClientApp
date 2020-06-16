@@ -2,6 +2,7 @@ import React from 'react'
 import { View, ListItem, Left, Thumbnail, Body, Right, Icon, Text, CardItem } from 'native-base'
 import { SafeAreaView } from 'react-native'
 import { FlatList, TouchableHighlight } from 'react-native-gesture-handler'
+import { renderEmptyContainer } from './SearchDetails'
 
 const details = [
     {
@@ -20,7 +21,7 @@ const GenericListItems = (props: any) => {
     return (
         <View>
             <SafeAreaView>
-                <FlatList data={details}
+                <FlatList data={props.route.params.application.Name === 'Stock Overview' ? details : [] || []}
                     keyExtractor={(item: any) => item.id}
                     renderItem={
                         ({item, index}) => (
@@ -39,6 +40,7 @@ const GenericListItems = (props: any) => {
                             </TouchableHighlight>       
                         )
                     }
+                    ListEmptyComponent={renderEmptyContainer}
                 />
             </SafeAreaView>
         </View>
