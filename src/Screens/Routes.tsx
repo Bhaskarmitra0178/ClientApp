@@ -15,7 +15,8 @@ import { View } from 'react-native';
 import GenericListItems from './Common/GenericListItems';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Search } from './Common/Search';
-import { SearchDetails, SearchPlant, SearchStorageLocation, SearchBarcode } from './Common/SearchDetails';
+import { SearchDetails, SearchPlant, SearchStorageLocation, SearchBarcode, BarcodeDetails } from './Common/SearchDetails';
+import { SettingsList } from './Common/Settings/SettingsList';
 
 
 export const Routes = (props: any) => {
@@ -131,6 +132,39 @@ export const Routes = (props: any) => {
                             })} 
                             component={UserProfile}
                         />
+                        <Stack.Screen name="UserSettingsList"
+                            options={({route, navigation}) => ({
+                                title: 'Profile',
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={SettingsList}
+                        />
+                        <Stack.Screen name="ContactDetailsSettings"
+                            options={({route, navigation}) => ({
+                                title: 'Profile',
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={ContactDetails}
+                        />
+                        <Stack.Screen name="ApplicationFanoutSettings"
+                            options={({route, navigation}) => ({
+                                title: 'Profile',
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={AppList}
+                        />
                         <Stack.Screen name="ApplicationDetails"
                             options={({route, navigation} : any) => ({
                                 title: `${route.params && route.params.application.Name || 'ApplicationDetails'}`,
@@ -203,6 +237,17 @@ export const Routes = (props: any) => {
                                 headerTintColor: '#fff'
                             })} 
                             component={SearchBarcode}
+                        />
+                        <Stack.Screen name="BarcodeDetails"
+                            options={({route, navigation} : any) => ({
+                                title: `${route.params && route.params.appName || 'Barcode Details'}`,
+                                headerTitleAlign: 'center',
+                                headerStyle:{
+                                    backgroundColor: globalStyles.COLOR_PRIMARY
+                                },
+                                headerTintColor: '#fff'
+                            })} 
+                            component={BarcodeDetails}
                         />
                     </>   
                 )

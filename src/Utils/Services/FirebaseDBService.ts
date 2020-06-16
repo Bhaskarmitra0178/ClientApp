@@ -62,7 +62,14 @@ export const userApplicationList = (userUID: string) => {
             .where(firebase.firestore.FieldPath.documentId(),'in', applicationIDs)
             .get()
         })
+}
 
+export const getUserContactDetails = (userUID: string) => {
+    return firebase.firestore()
+        .collection('Users')
+        .doc(userUID)
+        .collection('Contact Info')
+        .get()
 }
 
 export const createUserMapping = (userUID: string, payload: {applications: any, contactDetails: any}) => {
@@ -72,3 +79,20 @@ export const createUserMapping = (userUID: string, payload: {applications: any, 
         createApplicationUserMapping(userUID, payload.applications)
     ])
 }
+
+/**
+ * Find barcode corresponding to meterial
+ * @param meterial 
+ */
+export const findBarcodeDetails = (material: any) => {
+    return firebase.firestore()
+        .collection('Barcode')
+        .where('Material','==', material.Material)
+        .where('Plant', '==', material.Plant)
+        .where('StorageLoc', '==', material['Storage Loc'])
+        .get()
+}
+
+export const fetchUserSettings = (userUID: string) => {
+    return Promise.all([getUserContactDetails(userUID),userApplicationList(userUID)]);   
+ }

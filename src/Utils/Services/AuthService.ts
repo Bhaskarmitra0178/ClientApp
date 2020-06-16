@@ -200,3 +200,46 @@ export const createApplicationUserMapping = (userID: string, applicationList: Ar
       });
     return batch.commit();  
 }
+
+export const updateApplicationMapping = (userID: string, applicationList: Array<any>) => {
+    const batch = firebase.firestore().batch()
+    return firebase.firestore()
+    .collection("Users")
+    .doc(userID)
+    .collection('Applications')
+    .get()
+    .then((res:any) => {
+        res.forEach((element: any) => {
+            element.ref.delete();
+        });
+        return true;
+    })
+    .then((payload: boolean) => {
+        if (payload) {
+            applicationList.forEach((doc: any) => {
+                const docRef = firebase.firestore()
+                    .collection("Users")
+                    .doc(userID)
+                    .collection('Applications')
+                    .doc(doc.id);
+                batch.set(docRef, {"Status": "Active", "TimeStamp": firebase.database.ServerValue.TIMESTAMP});
+              });
+        }
+    })
+    .catch((error: any) => console.log(error))
+    .finally(() => {
+        return batch.commit();  
+    })
+}
+
+export const updateUsercontactInfo = (userUID: string,contactInfoID: string, payload: any) => {
+    return firebase.firestore()
+    .collection('Users')
+    .doc(userUID)
+    .collection('Contact Info')
+    .doc(contactInfoID)
+    .set({
+        Name: payload.name,
+        Telephone: payload.telephone
+    }, {merge: true})
+}

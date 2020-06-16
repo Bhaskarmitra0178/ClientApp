@@ -1,17 +1,23 @@
-import { SET_APPLICATION_DETAILS } from "../../Actions/AppDetailsAction";
+import { SET_APPLICATION_DETAILS,SET_USER_APPLICATIONS } from "../../Actions/AppDetailsAction";
 
 
 const appDetailsInitialState = {
     masterData: [],
     materials: [],
     plants: [],
-    storageLocations: []
+    storageLocations: [],
+    applicationList: []
 }
 /**
  * Reducer logic.
  */
 export default (state = appDetailsInitialState, action: any ) => {
     switch (action.type) {
+     case SET_USER_APPLICATIONS: 
+        return {
+            ...state,
+            applicationList: action.payload
+        };
      case SET_APPLICATION_DETAILS:
         return {
             ...state,

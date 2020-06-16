@@ -7,7 +7,7 @@ import { TouchableHighlight } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
 import { useDispatch } from 'react-redux';
 
-export const UserProfile = () => {
+export const UserProfile = (props: any) => {
     /**
     * Variable declaration
     */
@@ -38,14 +38,16 @@ export const UserProfile = () => {
             </View>
             <View style={{flex: 0.7, backgroundColor: globalStyles.COLOR_SECONDARY}}>
                 <Card style={{position: "absolute", width: '100%', padding: 0, top: 20, zIndex: 1}}>
-                    <CardItem bordered>
-                        <Left>
-                            <Text style={{flexWrap: 'wrap'}}>Default Settings</Text>
-                        </Left>
-                        <Right>
-                            <Icon name='arrow-forward'/>
-                        </Right>
-                    </CardItem>
+                    <TouchableHighlight underlayColor='#555' onPress={() => props.navigation.navigate('UserSettingsList')}>
+                        <CardItem bordered>
+                            <Left>
+                                <Text style={{flexWrap: 'wrap'}}>Default Settings</Text>
+                            </Left>
+                            <Right>
+                                <Icon name='arrow-forward'/>
+                            </Right>
+                        </CardItem>
+                    </TouchableHighlight>
                     <Text style={{marginLeft: 25, marginTop: 10}}>Work Mode:</Text>
                     <CardItem>
                         <SegmentedControlTab

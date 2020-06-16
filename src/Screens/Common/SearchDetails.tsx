@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { View, SafeAreaView, Image } from 'react-native';
-import { Card, CardItem, Left, Icon, Body, Text, Right,  Thumbnail } from 'native-base';
+import { Card, CardItem, Left, Icon, Body, Text, Right,  Thumbnail, Spinner } from 'native-base';
 import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
 import { globalStyles } from '../../Utils/Data/Styles';
+import { findBarcodeDetails } from '../../Utils/Services/FirebaseDBService';
+import { Splash } from '../Splash';
 
 export const renderEmptyContainer = (props: any) => {
     return (
@@ -347,7 +349,7 @@ export const SearchStorageLocation = (props: any) => {
                         keyExtractor={(item: any) => item.id}
                         data={materialList || []}
                         renderItem={({item, index}) => (
-                            <TouchableHighlight underlayColor="#fbbd7e">
+                            <TouchableHighlight underlayColor="#fbbd7e" onPress={() => props.navigation.navigate('BarcodeDetails', { appName: props.route.params.appName,material: item})}>
                                 <CardItem last={index === materialList.length} bordered={index !== materialList.length} key={item.id}>
                                     <Left>
                                         <Icon style={{color: '#579fd4'}} type='FontAwesome' name='play-circle-o'/>
@@ -485,7 +487,7 @@ export const SearchBarcode = (props: any) => {
                         keyExtractor={(item: any) => item.id}
                         data={materialList || []}
                         renderItem={({item, index}) => (
-                            <TouchableHighlight underlayColor="#fbbd7e">
+                            <TouchableHighlight underlayColor="#fbbd7e" onPress={() => props.navigation.navigate('BarcodeDetails', { appName: props.route.params.appName, material: item})}>
                                 <CardItem last={index === materialList.length} bordered={index !== materialList.length} key={item.id}>
                                     <Left>
                                         <Icon style={{color: '#579fd4'}} type='FontAwesome' name='play-circle-o'/>
@@ -511,6 +513,109 @@ export const SearchBarcode = (props: any) => {
                     />
                 </SafeAreaView>
             </View>           
+        </View>
+    )
+}
+
+export const BarcodeDetails = (props: any) => {
+    const [barcodes, setBarcodes] = useState<Array<any>>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setLoading(true);
+        findBarcodeDetails(props.route.params.material)
+        .then((snapShot: any) => {
+           const barcodeDetails = snapShot.docs.map((data: any) => ({
+                id: data.id,
+                ...data.data()
+            }));
+            setBarcodes(barcodeDetails);
+            setLoading(false);
+        })
+        .catch((error: any) => {
+            console.log(error)
+            setLoading(false);
+        })
+    }, [])
+
+    return (
+        <View style={{flex: 1}}>
+            <View style={{flex: 0.5}}>
+                <Card>
+                    <CardItem bordered>
+                        <Left>
+                            <Text>Material:</Text>
+                        </Left>
+                        <Right>
+                            <Text>{props.route.params.material && props.route.params.material.Material || '-'}</Text>
+                        </Right>
+                    </CardItem>
+                    <CardItem bordered>
+                        <Left>
+                            <Text>Description:</Text>
+                        </Left>
+                        <Right>
+                            <Text>{props.route.params.material && props.route.params.material.Description || '-'}</Text>
+                        </Right>
+                    </CardItem>
+                    <CardItem bordered>
+                        <Left>
+                            <Text>Plant:</Text>
+                        </Left>
+                        <Right>
+                            <Text>{props.route.params.material && props.route.params.material.Plant  || '-'}</Text>
+                        </Right>
+                    </CardItem>
+                    <CardItem bordered>
+                        <Left>
+                            <Text>Material Type:</Text>
+                        </Left>
+                        <Right>
+                            <Text>{props.route.params.material && props.route.params.material.Type || '-'}</Text>
+                        </Right>
+                    </CardItem>
+                    <CardItem last>
+                        <Left>
+                            <Text>Base UOM:</Text>
+                        </Left>
+                        <Right>
+                            <Text>{props.route.params.material && props.route.params.material.UNIT || '-'}</Text>
+                        </Right>
+                    </CardItem>
+                </Card>
+            </View> 
+            <View style={{flex: 0.5}}>
+    
+                {!loading ? <SafeAreaView>
+                    <FlatList 
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        disableVirtualization={false}
+                        keyExtractor={(item: any) => item.id}
+                        data={barcodes || []}
+                        renderItem={({item, index}) => (
+                            <TouchableHighlight underlayColor="#fbbd7e">
+                                <CardItem last={index === barcodes.length} bordered={index !== barcodes.length} key={item.id}>
+                                    <Left>
+                                        <Icon style={{color: '#579fd4'}} type='FontAwesome' name='play-circle-o'/>
+                                        <Body>
+                                            <Text style={{fontSize: 10}}>Storage Location</Text>
+                                        </Body>
+                                        <Left>
+                                            <Text note style={{color: "#000"}}>{item['StorageLoc'] || ''}</Text>
+                                        </Left>
+                                    </Left>
+                                
+                                    <Body>
+                                        <Text note numberOfLines={1}>Status : <Text style={{color: '#579fd4'}}> {item.Status || ''}</Text> </Text>
+                                    </Body>
+                                    
+                                </CardItem>
+                            </TouchableHighlight>
+                        )}
+                        ListEmptyComponent={renderEmptyContainer(props)}
+                    />
+                </SafeAreaView> : <Spinner color='blue'/>}
+            </View>       
         </View>
     )
 }

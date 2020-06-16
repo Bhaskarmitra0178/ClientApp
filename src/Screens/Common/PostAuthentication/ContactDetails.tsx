@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Container, Content, Grid, Row, Form, Thumbnail, Item, Icon, Input, Button,Col,Text, Toast, Spinner, Card, CardItem } from 'native-base'
-import { emptyFieldValidator, hasError} from '../../../Utils/Services/AuthService'
+import { emptyFieldValidator, hasError, updateUsercontactInfo} from '../../../Utils/Services/AuthService'
 import {StyleSheet} from 'react-native'
 import { initialiseImages } from '../../../Utils/Services/ExpoService'
 import { useSelector, useDispatch } from 'react-redux'
@@ -26,6 +26,20 @@ export const ContactDetails = (props: any) => {
      */
     useEffect(() => {
         initialiseLogo();
+        if (props.route.params.contactDetails) {
+            setName({
+                value: props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Name || '',
+                error: emptyFieldValidator(props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Name),
+                hasError: hasError('contactDetails.name',props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Name),
+                touched: true
+            })
+            setTelephone({
+                value: props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Telephone || '',
+                error: (props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Telephone.length > 0 && props.route.params.contactDetails[0].Telephone.length !== 10 ? 'Invalid Phone Number' : ''),
+                hasError: false ,
+                touched: true
+            })
+        }
     }, [])
 
 
@@ -38,16 +52,31 @@ export const ContactDetails = (props: any) => {
     }
     
     const onSubmitContactDetails = () => {
-        setLoading(true);
-        dispatch({
-            type: 'SET_LOCAL_CONTACT_STORAGE',
-            payload: {
-                name: name.value,
-                telephone: telephone.value
-            }
-        });
-        setLoading(false);
-        props.navigation.navigate('Application Fanout');
+        if (props.route.params.contactDetails) {
+            setLoading(true);
+            console.log(user.userDetails.uid ,name.value);
+            updateUsercontactInfo(
+                user.userDetails.uid,
+                props.route.params.contactDetails[0].id,
+                {
+                    name: name.value,
+                    telephone: telephone.value
+                }
+            );
+            setLoading(false);
+            props.navigation.navigate('UserProfile');
+        } else {
+            setLoading(true);
+            dispatch({
+                type: 'SET_LOCAL_CONTACT_STORAGE',
+                payload: {
+                    name: name.value,
+                    telephone: telephone.value
+                }
+            });
+            setLoading(false);
+            props.navigation.navigate('Application Fanout');
+        }   
     }
 
     return (
@@ -112,8 +141,8 @@ export const ContactDetails = (props: any) => {
                             disabled={loading || name.hasError || (telephone.value.length > 0 && telephone.value.length !== 10)}
                             onPress={onSubmitContactDetails}
                         >
-                            <Text>Next</Text>
-                            <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>
+                            <Text>{props.route.params.contactDetails ? 'Submit' : 'Next'}</Text>
+                            {!props.route.params.contactDetails && <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>}
                         </Button>
                     </CardItem>
                 

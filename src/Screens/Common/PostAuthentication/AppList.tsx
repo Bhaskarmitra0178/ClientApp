@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Splash } from '../../Splash'
 import { Thumbnail, Container, Content, List, ListItem, Left, CheckBox, Body, Text, Footer, Button, Icon, Toast, Right, View } from 'native-base'
 import { fetchApplicationList, createUserMapping } from '../../../Utils/Services/FirebaseDBService'
-import { createApplicationUserMapping } from '../../../Utils/Services/AuthService';
+import { createApplicationUserMapping, updateApplicationMapping } from '../../../Utils/Services/AuthService';
 import { SafeAreaView } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { StoreModel } from '../../../Redux/Model/Store.model'
@@ -26,7 +26,7 @@ export const AppList = (props: any) => {
             const apps = appFanoutSnapShot.docs.map((appFanout: any) => ({
                 id: appFanout.id,
                 ...appFanout.data(),
-                selected: false
+                selected: props.route.params.applications ? !!props.route.params.applications.find((app: any) => app.id === appFanout.id) : false
             }))
             setApplicationList(apps);
             setloading(false);
@@ -79,6 +79,33 @@ export const AppList = (props: any) => {
             setloading(false);
         })
     }
+
+    const updateApplicationList = () => {
+        setloading(true);
+        const selectedApps = applicationList.filter((appList: any) => appList.selected);
+        updateApplicationMapping(user.userDetails.uid, selectedApps)
+        .then(() => {
+            dispatch({type: 'HAS_ADDITIONAL_DATA', payload: true})
+            Toast.show({
+                text: 'Profile sucessfully updated!',
+                position: "bottom",
+                type: "success",
+                duration: 2000
+            })
+            setloading(false);
+            props.navigation.navigate('UserProfile');
+        })
+        .catch((error) => {
+            console.log(error);
+            Toast.show({
+                text: error.message,
+                position: "bottom",
+                type: "success",
+                duration: 2000
+            })
+            setloading(false);
+        })
+    }
     return (
         <View style={{flex: 1}}>
             {
@@ -115,9 +142,16 @@ export const AppList = (props: any) => {
                     </View>
                     <View style={{flex: 0.1}}> 
                         <Footer style={{padding: 5,backgroundColor: globalStyles.COLOR_PRIMARY}}>
+                            {
+                            !props.route.params.applications ?
                             <Button dark rounded onPress={submit}>
                                 <Text>Submit</Text>
                             </Button>
+                            :
+                            <Button dark rounded onPress={updateApplicationList}>
+                                <Text>Update</Text>
+                            </Button>
+                            }
                         </Footer>    
                     </View>    
                 </>
