@@ -26,7 +26,8 @@ export const ContactDetails = (props: any) => {
      */
     useEffect(() => {
         initialiseLogo();
-        if (props.route.params.contactDetails) {
+        if (props.route && props.route.params && props.route.params.contactDetails) {
+            console.log('here');
             setName({
                 value: props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Name || '',
                 error: emptyFieldValidator(props.route.params.contactDetails[0] && props.route.params.contactDetails[0].Name),
@@ -141,7 +142,7 @@ export const ContactDetails = (props: any) => {
                             disabled={loading || name.hasError || (telephone.value.length > 0 && telephone.value.length !== 10)}
                             onPress={onSubmitContactDetails}
                         >
-                            <Text>{props.route.params.contactDetails ? 'Submit' : 'Next'}</Text>
+                            <Text>{props.route && props.route.params && props.route.params.contactDetails ? 'Submit' : 'Next'}</Text>
                             {!props.route.params.contactDetails && <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>}
                         </Button>
                     </CardItem>
