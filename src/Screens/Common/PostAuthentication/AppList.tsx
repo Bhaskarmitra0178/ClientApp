@@ -26,7 +26,7 @@ export const AppList = (props: any) => {
             const apps = appFanoutSnapShot.docs.map((appFanout: any) => ({
                 id: appFanout.id,
                 ...appFanout.data(),
-                selected: props.route.params.applications ? !!props.route.params.applications.find((app: any) => app.id === appFanout.id) : false
+                selected: props.route && props.route.params && props.route.params.applications ? !!props.route.params.applications.find((app: any) => app.id === appFanout.id) : false
             }))
             setApplicationList(apps);
             setloading(false);
@@ -143,7 +143,7 @@ export const AppList = (props: any) => {
                     <View style={{flex: 0.1}}> 
                         <Footer style={{padding: 5,backgroundColor: globalStyles.COLOR_PRIMARY}}>
                             {
-                            !props.route.params.applications ?
+                            props.route && props.route.params && !props.route.params.applications ?
                             <Button dark rounded onPress={submit}>
                                 <Text>Submit</Text>
                             </Button>

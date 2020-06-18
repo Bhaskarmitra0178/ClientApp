@@ -63,21 +63,28 @@ export const GenericList = (props: any) => {
                     keyExtractor={(item: any) => item.id}
                     renderItem={({ item, index }: any) => (
                         
-                        <TouchableHighlight underlayColor="#666"  onPress={() => props.navigation.navigate('ApplicationDetails', { application: item})}>
+                        <TouchableHighlight underlayColor="#666"  onPress={() => item.Name !== 'Stock Overview' && props.navigation.navigate('ApplicationDetails', { application: item})}>
                             <CardItem  key={item.Name} bordered={index !== applicationList.length} last={index === applicationList.length}>
                                 <Left>
                                     <Body>
                                         {item.PictureUrl  ? <Thumbnail small={true} square 
                                             source={{uri: item.PictureUrl}}
                                         /> :
-                                        <Thumbnail small={true} square 
-                                            source={picture}
-                                        />}
+                                        
+                                            item.Name !== 'Stock Overview' ?
+                                            <Thumbnail small={true} square 
+                                                source={require('../../../assets/Images/IconDIsabledApp.png')}
+                                            />
+                                            : 
+                                            <Thumbnail small={true} square 
+                                                source={picture}
+                                            />
+                                        }
                                     </Body>
                                 </Left>
                                 <Body>
-                                    <Text>{item.Name || ''}</Text>
-                                    <Text note numberOfLines={1}>{item.Desription || ''}</Text>
+                                    <Text style={{color: item.Name !== 'Stock Overview' ? '#777' : '#000'}}>{item.Name || ''}</Text>
+                                    <Text note numberOfLines={1}>{ item.Name !== 'Stock Overview' ? 'Coming Soon' : item.Desription || ''}</Text>
                                 </Body>
                                 <Right>
                                     <Icon type='MaterialIcons' name='navigate-next'/>
