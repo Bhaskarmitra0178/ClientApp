@@ -83,7 +83,7 @@ export const GenericList = (props: any) => {
                                     </Body>
                                 </Left>
                                 <Body>
-                                    <Text style={{color: item.Name !== 'Stock Overview' ? '#777' : '#000'}}>{item.Name || ''}</Text>
+                                    <Text style={{color: item.Name !== 'Stock Overview' ? '#777' : '#000', width: '100%'}}>{item.Name || ''}</Text>
                                     <Text note numberOfLines={1}>{ item.Name !== 'Stock Overview' ? 'Coming Soon' : item.Desription || ''}</Text>
                                 </Body>
                                 <Right>

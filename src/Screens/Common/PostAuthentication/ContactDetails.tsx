@@ -143,7 +143,7 @@ export const ContactDetails = (props: any) => {
                             onPress={onSubmitContactDetails}
                         >
                             <Text>{props.route && props.route.params && props.route.params.contactDetails ? 'Submit' : 'Next'}</Text>
-                            {props.route && props.route.params && !props.route.params.contactDetails && <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>}
+                            {!props.route.params && <Icon  android='md-arrow-forward' ios='ios-arrow-forward'></Icon>}
                         </Button>
                     </CardItem>
                 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Splash } from '../../Splash'
-import { Thumbnail, Container, Content, List, ListItem, Left, CheckBox, Body, Text, Footer, Button, Icon, Toast, Right, View } from 'native-base'
+import { Thumbnail, Container, Content, List, ListItem, Left, CheckBox, Body, Text, Footer, Button, Icon, Toast, Right, View, Header, Item, Input } from 'native-base'
 import { fetchApplicationList, createUserMapping } from '../../../Utils/Services/FirebaseDBService'
 import { createApplicationUserMapping, updateApplicationMapping } from '../../../Utils/Services/AuthService';
 import { SafeAreaView } from 'react-native'
@@ -12,8 +12,11 @@ import { globalStyles } from '../../../Utils/Data/Styles';
 export const AppList = (props: any) => {
 
     const [applicationList, setApplicationList] = useState<Array<any>>([]);
+    const [filteredList, setFilteredList] = useState<Array<any>>([]);
+
     const [loading, setloading] = useState<boolean>(false);
     const [checkBoxLoading, setCheckBoxLoading] = useState<boolean>(false);
+    const [searchText, setSearchText] = useState('');
 
     const user = useSelector((store: StoreModel) => store.user)
     const dispatch = useDispatch();
@@ -30,11 +33,13 @@ export const AppList = (props: any) => {
             }))
             .sort();
             setApplicationList(apps);
+            setFilteredList(apps);
             setloading(false);
         })
         .catch((error: any) => {
             console.log(error);
             setApplicationList([])
+            setFilteredList([]);
             setloading(false)
         })
     }, [])
@@ -46,7 +51,9 @@ export const AppList = (props: any) => {
             ...app,
             ...(app.Name === applicationName ? {selected: app.selected ? false : true} : {})
         }));
-        setApplicationList(appList); 
+        const filtered = searchText ? appList.filter((data: any) => data.Name.includes(searchText)) : appList
+        setApplicationList(appList);
+        setFilteredList(filtered);
         setCheckBoxLoading(false)
     }
     
@@ -107,6 +114,14 @@ export const AppList = (props: any) => {
             setloading(false);
         })
     }
+
+    const onSearchText = (text: string) => {
+        setSearchText(text)
+        const appList = [...applicationList];
+        const filteredData = text ? appList.filter((data: any) => data.Name.includes(text)) : appList;
+        setFilteredList(filteredData);
+    }
+
     return (
         <View style={{flex: 1}}>
             {
@@ -114,10 +129,19 @@ export const AppList = (props: any) => {
                 <Splash/>  : 
                 <>
                     <View style={{flex: 0.9}}>
+                    <Header searchBar rounded>
+                    <Item>
+                        <Icon android='md-search' ios="ios-search" />
+                        <Input value={searchText} onChangeText={(text: any) => onSearchText(text) } placeholder="Search" />
+                    </Item>
+                    <Button transparent>
+                        <Text>Search</Text>
+                    </Button>
+                    </Header>
                         <SafeAreaView>
                             <FlatList
                                 pointerEvents={checkBoxLoading ? 'none' : 'box-only'}
-                                data={applicationList || []}
+                                data={filteredList || []}
                                 keyExtractor={item => item.id}
                                 renderItem={({ item }) => (
                                     <TouchableHighlight underlayColor="#ccc" onPress={() => onCheckApplication(item.Name)}>
@@ -144,7 +168,7 @@ export const AppList = (props: any) => {
                     <View style={{flex: 0.1}}> 
                         <Footer style={{padding: 5,backgroundColor: globalStyles.COLOR_PRIMARY}}>
                             {
-                            props.route && props.route.params && !props.route.params.applications ?
+                            !props.route.params ?
                             <Button dark rounded onPress={submit}>
                                 <Text>Submit</Text>
                             </Button>
