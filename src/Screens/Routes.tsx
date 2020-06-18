@@ -85,7 +85,7 @@ export const Routes = (props: any) => {
                         <Stack.Screen name="Billing Details" component={BillingDetails}/>
                         <Stack.Screen name="Application Fanout"
                             options={{
-                                title: 'Application Fanout',
+                                title: 'Select Applications',
                                 headerTitleAlign: 'center',
                                 headerStyle:{
                                     backgroundColor: globalStyles.COLOR_PRIMARY

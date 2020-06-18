@@ -28,6 +28,7 @@ export const AppList = (props: any) => {
                 ...appFanout.data(),
                 selected: props.route && props.route.params && props.route.params.applications ? !!props.route.params.applications.find((app: any) => app.id === appFanout.id) : false
             }))
+            .sort();
             setApplicationList(apps);
             setloading(false);
         })

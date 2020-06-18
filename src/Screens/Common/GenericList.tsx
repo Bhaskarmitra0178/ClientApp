@@ -63,7 +63,7 @@ export const GenericList = (props: any) => {
                     keyExtractor={(item: any) => item.id}
                     renderItem={({ item, index }: any) => (
                         
-                        <TouchableHighlight underlayColor="#666"  onPress={() => item.Name !== 'Stock Overview' && props.navigation.navigate('ApplicationDetails', { application: item})}>
+                        <TouchableHighlight underlayColor="#666"  onPress={() => item.Name === 'Stock Overview' && props.navigation.navigate('ApplicationDetails', { application: item})}>
                             <CardItem  key={item.Name} bordered={index !== applicationList.length} last={index === applicationList.length}>
                                 <Left>
                                     <Body>
