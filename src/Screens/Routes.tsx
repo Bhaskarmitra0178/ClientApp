@@ -17,6 +17,7 @@ import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handl
 import { Search } from './Common/Search';
 import { SearchDetails, SearchPlant, SearchStorageLocation, SearchBarcode, BarcodeDetails } from './Common/SearchDetails';
 import { SettingsList } from './Common/Settings/SettingsList';
+import BarcodeScannerExample from './Common/Barcode';
 
 
 export const Routes = (props: any) => {
@@ -193,6 +194,9 @@ export const Routes = (props: any) => {
                                 headerTintColor: '#fff'
                             })} 
                             component={Search}
+                        />
+                        <Stack.Screen name="BarcodeSearch"
+                            component={BarcodeScannerExample}
                         />
                         <Stack.Screen name="SearchDetails"
                             options={({route, navigation} : any) => ({

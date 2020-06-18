@@ -50,7 +50,7 @@ export const Search = (props: any) => {
                     plants: plantsArr,
                     storageLocations: storageLocationArr,
                     barcode: barcodeArr
-                }})
+                }})   
             });    
         
         return () => {
@@ -74,6 +74,10 @@ export const Search = (props: any) => {
             const storageLocationArr = SnapshotArr[1].data().StorageLocation;
             const materialArr = SnapshotArr[1].data().Material;
             const barcodeArr = SnapshotArr[1].data().Barcode;
+            if (props.route && props.route.params && props.route.params.barcode) {
+                setBarcode(!!props.route.params.barcode);
+                setMaterials(props.route.params.barcode);
+            }
             dispatch({type: 'SET_APPLICATION_DETAILS', payload: {
                 viewData: viewData,
                 materials: materialArr,
@@ -88,6 +92,7 @@ export const Search = (props: any) => {
             setLoading(false);
         })
     }
+
     return (
         loading ? 
         <Splash/>
@@ -161,7 +166,7 @@ export const Search = (props: any) => {
                 <Card>
                     <CardItem>
                         <Left>
-                            <Button iconLeft style={{backgroundColor: globalStyles.COLOR_FOOTER}}>
+                            <Button iconLeft style={{backgroundColor: globalStyles.COLOR_FOOTER}} onPress={() => props.navigation.navigate('BarcodeSearch')}>
                                 <Icon type="AntDesign" name="scan1"/>
                                 <Text>Scan</Text>
                             </Button>
