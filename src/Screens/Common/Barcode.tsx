@@ -34,7 +34,7 @@ export default class BarcodeScannerExample extends React.Component<any,any> {
         }
     });
   };
-
+  
   render() {
     const { hasCameraPermission, scanned } = this.state;
 

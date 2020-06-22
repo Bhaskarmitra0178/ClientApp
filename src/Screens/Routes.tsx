@@ -24,10 +24,6 @@ export const Routes = (props: any) => {
  
     const Stack = createStackNavigator();
 
-    const navigateTo = (navigation: any) => {
-        navigation.navigate('SignUp');
-    }
-
     return (
         <Stack.Navigator>
             {
@@ -43,9 +39,11 @@ export const Routes = (props: any) => {
                                 headerTitleAlign: 'center',
                                 headerTintColor: '#fff',
                                 headerRight: () => (
-                                    <TouchableOpacity onPress={navigateTo}>
-                                        <Text style={{color: '#fff'}}> Register </Text>               
-                                    </TouchableOpacity>
+                                    <View>
+                                        <TouchableOpacity onPress={()=> navigation.navigate('SignUp')}>
+                                            <Text style={{color: '#fff'}}> Register </Text>               
+                                        </TouchableOpacity>
+                                    </View>
                                 ) 
                             })}
                             component={Login}

@@ -138,14 +138,17 @@ export const Login = (props: any) => {
                                 <Text>Login</Text>
                             </Button>    
                         </CardItem>
-                        <CardItem last style={{justifyContent:'center'}}>
-                                <TouchableOpacity>
+                        
+                                <TouchableOpacity onPress={() => props.navigation.navigate('ForgotPassword')}>
+                                <CardItem last style={{justifyContent:'center'}}>
                                     <Text note={true}
                                         // style={styles.alignButton}
-                                        onPress={() => props.navigation.navigate('ForgotPassword')}
+                                        
                                     > Forgot Password ?</Text>  
+                               </CardItem>
                                 </TouchableOpacity>
-                        </CardItem>
+
+
                     </Card>
             </Content>
       </Container>

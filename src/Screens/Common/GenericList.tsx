@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet, View, TouchableHighlight, RefreshControl } fr
 import { StoreModel } from '../../Redux/Model/Store.model'
 const picture = require('../../../assets/application-default-icon.png')
 import * as firebase from 'firebase';
-import { userApplicationList } from '../../Utils/Services/FirebaseDBService'
+import { userApplicationList, userApplicationListSubscription } from '../../Utils/Services/FirebaseDBService'
 import { Splash } from '../Splash'
 import { FlatList } from 'react-native-gesture-handler'
 
@@ -16,6 +16,7 @@ export const GenericList = (props: any) => {
     const dispatch = useDispatch();
 
     const currentLoggedInUser = useSelector((store: StoreModel) => store.user);
+
 
 
     useEffect(() => {
@@ -30,6 +31,21 @@ export const GenericList = (props: any) => {
             console.log("Error getting document:", error);
             setApplicationList([]);
         });
+        const listSubscriptionMaterials = userApplicationListSubscription(currentLoggedInUser.userDetails.uid)
+        .then((snapShotChanges: any) => {
+            snapShotChanges.onSnapshot((snapShot: any) => {
+                const appListArray = snapShot.docs.map((app: any) => ({
+                    id: app.id,
+                    ...app.data()
+                }));console.log(appListArray);
+                setApplicationList(appListArray);
+            });
+        }).catch((error: any) => {
+            console.log("Error getting document:", error);
+            setApplicationList([]);
+        });
+        /* return() => (listSubscriptionMaterials()) */
+
     }, [])
 
     const _onRefresh = () => {
@@ -52,14 +68,14 @@ export const GenericList = (props: any) => {
             {
             loading ? <Splash/> :
             <SafeAreaView>
-                <FlatList data={applicationList || []}
+                <FlatList data={applicationList || []} contentContainerStyle = {{flexGrow:1}}
                     refreshControl={
                         <RefreshControl
                         refreshing={refresh}
                         onRefresh={_onRefresh}
                         />
                     }
-                    pointerEvents='box-only'
+                    /* pointerEvents='box-only' */
                     keyExtractor={(item: any) => item.id}
                     renderItem={({ item, index }: any) => (
                         
@@ -89,7 +105,7 @@ export const GenericList = (props: any) => {
                                 <Right>
                                     <Icon type='MaterialIcons' name='navigate-next'/>
                                 </Right>
-                                
+                            
                             </CardItem>
                         </TouchableHighlight>
                     )}>

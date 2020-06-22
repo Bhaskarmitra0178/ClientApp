@@ -64,6 +64,21 @@ export const userApplicationList = (userUID: string) => {
         })
 }
 
+export const userApplicationListSubscription = (userUID: string) => {
+    return firebase.firestore()
+        .collection('Users')
+        .doc(userUID)
+        .collection('Applications')
+        .get()
+        .then((applicationSnapShot: any) => {
+            const applicationIDs = applicationSnapShot.docs.map((doc: any) => doc.id)
+            return firebase.firestore()
+            .collection('ApplicationFanout')
+            .where(firebase.firestore.FieldPath.documentId(),'in', applicationIDs)
+            
+        })
+}
+
 export const getUserContactDetails = (userUID: string) => {
     return firebase.firestore()
         .collection('Users')
