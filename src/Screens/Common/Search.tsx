@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View } from 'react-native'
 import { CardItem, Card, Left, Button, Text, Right, Icon, Body } from 'native-base'
 import { globalStyles } from '../../Utils/Data/Styles'
 import RNPickerSelect from 'react-native-picker-select';
@@ -16,6 +16,15 @@ export const Search = (props: any) => {
     const [storageLocations,setStorageLocations] = useState('');
     const [barcode, setBarcode] = useState<boolean>(false);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (props.route && props.route.params && props.route.params.barcode) {
+            setBarcode(!!props.route.params.barcode);
+            setMaterials(props.route.params.barcode);
+            setPlants('');
+            setStorageLocations('');
+        }
+    }, [props.route && props.route.params && props.route.params.barcode])
 
     const applicationData = useSelector((state: any) => ({
         materials: state.applicationData.materials,
@@ -74,10 +83,6 @@ export const Search = (props: any) => {
             const storageLocationArr = SnapshotArr[1].data().StorageLocation;
             const materialArr = SnapshotArr[1].data().Material;
             const barcodeArr = SnapshotArr[1].data().Barcode;
-            if (props.route && props.route.params && props.route.params.barcode) {
-                setBarcode(!!props.route.params.barcode);
-                setMaterials(props.route.params.barcode);
-            }
             dispatch({type: 'SET_APPLICATION_DETAILS', payload: {
                 viewData: viewData,
                 materials: materialArr,
@@ -102,27 +107,20 @@ export const Search = (props: any) => {
                 <Card>
                     <CardItem bordered>
                         <Left>
-                            <Text>Material</Text>
+                            <Left>
+                                <Text>Material</Text>
+                            </Left>
                         </Left>
-                        <Body style={{justifyContent: 'center'}}>
-                              <Left style={{justifyContent: 'center'}}>
-                                  <TouchableOpacity>
-                                    <Icon onPress={() => {
-                                                setBarcode(!barcode)
-                                                setMaterials('');
-                                                setPlants('');
-                                                setStorageLocations('');
-                                            }}
-                                        style={{color: barcode ? '#000' : '#aaa'}}
-                                        type="MaterialCommunityIcons"
-                                        name="barcode"
-                                    />
-                                  </TouchableOpacity>
-                                </Left>
-
-                        </Body>
                         <Right>
                             <RNPickerSelect
+                                style={{
+                                    inputIOS: {
+                                        color: 'black',
+                                    },
+                                    inputAndroid: {
+                                        color: 'black',
+                                    },
+                                }}
                                 value={materials}
                                 onValueChange={(value) => setMaterials(value)}
                                 items={barcode? applicationData.barcode : applicationData.materials}
@@ -135,6 +133,14 @@ export const Search = (props: any) => {
                         </Left>
                         <Right>
                             <RNPickerSelect
+                                style={{
+                                    inputIOS: {
+                                        color: 'black',
+                                    },
+                                    inputAndroid: {
+                                        color: 'black',
+                                    },
+                                }}
                                 value={plants}
                                 onValueChange={(value) => setPlants(value)}
                                 items={applicationData.plants.map((data: string) => ({
@@ -150,6 +156,14 @@ export const Search = (props: any) => {
                         </Left>
                         <Right>
                             <RNPickerSelect
+                                style={{
+                                    inputIOS: {
+                                        color: 'black',
+                                    },
+                                    inputAndroid: {
+                                        color: 'black',
+                                    },
+                                }}
                                 value={storageLocations}
                                 onValueChange={(value) => setStorageLocations(value)}
                                 items={applicationData.storageLocations.map((data: string) => ({

@@ -598,14 +598,12 @@ export const BarcodeDetails = (props: any) => {
                                     <Left>
                                         <Icon style={{color: '#579fd4'}} type='FontAwesome' name='play-circle-o'/>
                                         <Body>
-                                            <Text style={{fontSize: 10}}>Storage Location</Text>
+                                            <Text style={{fontSize: 10}}>Storage Location: {item['StorageLoc'] || ''}</Text>
                                         </Body>
-                                        <Left>
-                                            <Text note style={{color: "#000"}}>{item['StorageLoc'] || ''}</Text>
-                                        </Left>
                                     </Left>
                                 
                                     <Body>
+                                    <Text note style={{color: "#000"}}>{item['Barcode'] || ''}</Text>
                                         <Text note numberOfLines={1}>Status : <Text style={{color: '#579fd4'}}> {item.Status || ''}</Text> </Text>
                                     </Body>
                                     

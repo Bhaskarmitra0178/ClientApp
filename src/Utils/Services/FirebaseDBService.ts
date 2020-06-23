@@ -69,15 +69,14 @@ export const userApplicationListSubscription = (userUID: string) => {
         .collection('Users')
         .doc(userUID)
         .collection('Applications')
-        .get()
-        .then((applicationSnapShot: any) => {
-            const applicationIDs = applicationSnapShot.docs.map((doc: any) => doc.id)
-            return firebase.firestore()
+}
+
+export const fetchApplicationsDetailsFromUserList = (applicationIDs: Array<any>) => {
+    return firebase.firestore()
             .collection('ApplicationFanout')
             .where(firebase.firestore.FieldPath.documentId(),'in', applicationIDs)
-            
-        })
-}
+            .get()
+} 
 
 export const getUserContactDetails = (userUID: string) => {
     return firebase.firestore()

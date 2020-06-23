@@ -6,7 +6,7 @@ import { createApplicationUserMapping, updateApplicationMapping } from '../../..
 import { SafeAreaView, ScrollView } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { StoreModel } from '../../../Redux/Model/Store.model'
-import { FlatList, TouchableHighlight, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
 import { globalStyles } from '../../../Utils/Data/Styles';
 
 export const AppList = (props: any) => {
@@ -101,7 +101,7 @@ export const AppList = (props: any) => {
                 duration: 2000
             })
             setloading(false);
-            props.navigation.navigate('UserProfile');
+            props.navigation.navigate('Home');
         })
         .catch((error) => {
             console.log(error);
@@ -129,73 +129,42 @@ export const AppList = (props: any) => {
                 <Splash/>  : 
                 <>
                     <View style = {{flex:0.9}}>
-                    <Header searchBar rounded>
-                    <Item>
-                        <Icon android='md-search' ios="ios-search" />
-                        <Input value={searchText} onChangeText={(text: any) => onSearchText(text) } placeholder="Search" />
-                    </Item>
-                    <Button transparent>
-                        <Text>Search</Text>
-                    </Button>
-                    </Header>
-                        <ScrollView>
-                            <FlatList contentContainerStyle = {{flexGrow:1}}
-                                /* pointerEvents={checkBoxLoading ? 'none' : 'box-only'} */
-                                data={filteredList || []}
-                                keyExtractor={item => item.id}
-                                renderItem={({ item }) => (
-                                    <TouchableWithoutFeedback underlayColor="#ccc" onPress={() => onCheckApplication(item.Name)}> 
-                                        <ListItem key={item.id}>
-                                    
+                        <Header searchBar rounded>
+                            <Item>
+                                <Icon android='md-search' ios="ios-search" />
+                                <Input value={searchText} onChangeText={(text: any) => onSearchText(text) } placeholder="Search" />
+                            </Item>
+                            <Button transparent>
+                                <Text>Search</Text>
+                            </Button>
+                        </Header>
+                        <FlatList contentContainerStyle={{flexGrow:1}}
+                            data={filteredList || []}
+                            keyExtractor={item => item.id}
+                            renderItem={({ item }) => (
+                                <TouchableHighlight underlayColor="#ccc" onPress={() => onCheckApplication(item.Name)}> 
+                                    <ListItem key={item.id}>
+                                
+                                        <Left>
                                             <Left>
-                                                <Left>
-                                                    <CheckBox checked={item.selected}/>
-                                                </Left>
-                                                <Body>
-                                                    <Thumbnail source={{uri: item.PictureUrl || require('../../../../assets/application-default-icon.png').uri}}/> 
-                                                </Body>
+                                                <CheckBox checked={item.selected}/>
                                             </Left>
                                             <Body>
-                                                <Text>{item.Name || ''}</Text>
-                                                <Text style={{width: '100%', flexWrap: 'wrap'}} note numberOfLines={1}>{item.Description || ''}</Text>
+                                                <Thumbnail source={{uri: item.PictureUrl || require('../../../../assets/application-default-icon.png').uri}}/> 
                                             </Body>
-                                            <Right/>
-                                        </ListItem>
-                                    </TouchableWithoutFeedback>
-                                )}
-                            />
-
-{/*                             <CardItem contentContainerStyle = {{flexGrow:1}}
-                                pointerEvents={checkBoxLoading ? 'none' : 'box-only'}
-                                dataArray={filteredList || []}
-                                keyExtractor={item => item.id}
-                                renderItem={({ item }) => (
-                                    <TouchableWithoutFeedback underlayColor="#ccc" onPress={() => onCheckApplication(item.Name)}> 
-                                        <View key={item.id}>
-                                    
-                                            <Left>
-                                                <Left>
-                                                    <CheckBox checked={item.selected}/>
-                                                </Left>
-                                                <Body>
-                                                    <Thumbnail source={{uri: item.PictureUrl || require('../../../../assets/application-default-icon.png').uri}}/> 
-                                                </Body>
-                                            </Left>
-                                            <Body>
-                                                <Text>{item.Name || ''}</Text>
-                                                <Text style={{width: '100%', flexWrap: 'wrap'}} note numberOfLines={1}>{item.Description || ''}</Text>
-                                            </Body>
-                                            <Right/>
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                )}
-                            /> */}
-
-                         </ScrollView>
-                        
+                                        </Left>
+                                        <Body>
+                                            <Text>{item.Name || ''}</Text>
+                                            <Text style={{width: '100%', flexWrap: 'wrap'}} note numberOfLines={1}>{item.Description || ''}</Text>
+                                        </Body>
+                                        <Right/>
+                                    </ListItem>
+                                </TouchableHighlight>
+                            )}
+                        />
                     </View>
-                    { <View style={{flex: 0.1}}> 
-                        <Footer style={{padding: 5,backgroundColor: globalStyles.COLOR_PRIMARY}}>
+                    <View style={{flex: 0.1,backgroundColor: globalStyles.COLOR_PRIMARY}}> 
+                        <Footer style={{padding: 5}}>
                             {
                             !props.route.params ?
                             <Button dark rounded onPress={submit}>
@@ -207,7 +176,7 @@ export const AppList = (props: any) => {
                             </Button>
                             }
                         </Footer>    
-                    </View>    }
+                    </View>    
                 </>
             }    
         </View>
