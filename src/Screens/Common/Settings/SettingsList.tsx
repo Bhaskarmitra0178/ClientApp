@@ -44,7 +44,7 @@ export const SettingsList = (props: any) => {
                             <Icon android='md-person' ios='ios-person'/>
                         </Left>
                         <Body>
-                            <Text>Contact Inforamtion</Text>
+                            <Text>Contact Information</Text>
                         </Body>
                         <Right>
                             <Icon type='MaterialIcons' name='navigate-next'/>
@@ -58,7 +58,7 @@ export const SettingsList = (props: any) => {
                             <Icon type='MaterialIcons' name='settings-applications'/>
                         </Left>
                         <Body>
-                          <Text>Application Fanout</Text>
+                          <Text>App List</Text>
                         </Body>
                         <Right>
                             <Icon type='MaterialIcons' name='navigate-next'/>
